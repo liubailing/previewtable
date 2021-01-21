@@ -1,0 +1,102 @@
+/** 当前表格 **/
+
+.div-previewTable .ant-table-small {
+	border: 1px solid #e8e8e8;
+	border-radius: 0px;
+}
+
+.div-previewTable .react-resizable {
+	position: relative;
+	background-clip: padding-box;
+}
+
+.div-previewTable .react-resizable-handle {
+	position: absolute;
+	width: 10px;
+	height: 100%;
+	bottom: 0;
+	right: -5px;
+	cursor: col-resize;
+	z-index: 1;
+}
+
+.div-previewTable .react-resizable-index .react-resizable-handle {
+	cursor: auto;
+}
+
+/* 头部样式 */
+
+.div-previewTable .ant-table-thead tr th {
+	line-height: 36px;
+	padding: 1px !important;
+}
+
+.div-previewTable .ant-table-thead .react-resizable-th {
+	position: relative;
+	height: 25px;
+	line-height: 25px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.div-previewTable .react-resizable-th span {
+	display: inline-block;
+}
+
+.div-previewTable .react-resizable-th .resizable-th-title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.div-previewTable .react-resizable-th span.resizable-th-title {
+	width: 100%;
+	text-align: center;
+}
+
+.div-previewTable .react-resizable-th:hover span.resizable-th-title {
+	width: calc(100% - 50px);
+}
+
+.div-previewTable .react-resizable-th input.resizable-th-title {
+	width: 100%;
+	min-width: 80px;
+	text-indent: 5px;
+}
+/** 头部操作 **/
+.div-previewTable .react-resizable-th span.resizable-th-action {
+	display: none;
+	cursor: pointer;
+	margin-right: 5px;
+}
+.div-previewTable .react-resizable-th:hover span.resizable-th-action {
+	display: inline;
+}
+
+/** 表格内容 ***/
+.div-previewTable .ant-table-tbody tr td {
+	line-height: 28px;
+	padding: 0 8px !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 300px;
+}
+
+/** loading */
+.div-previewTable {
+	overflow: hidden;
+}
+
+.div-previewTable .div-previewTable-spin {
+	position: absolute;
+	background-color: #ddd;
+	opacity: 0.5;
+	z-index: 6;
+}
+
+.div-previewTable .div-previewTable-spin .ant-spin-dot {
+	position: 'absolute';
+	top: 50%;
+	margin-top: -50px;
+}
