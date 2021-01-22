@@ -1,5 +1,5 @@
-import { IPreviewTableHander } from '../commonTable/privewTable/tableInterface';
-import { PreviewTableStore, column } from '../commonTable/privewTable/tableStore';
+import { IPreviewTableHander } from '../commonTable/previewTable/tableInterface';
+import { PreviewTableStore, column } from '../commonTable/previewTable/tableStore';
 
 import { observable } from 'mobx';
 
@@ -29,14 +29,14 @@ export class AppStore implements IPreviewTableHander {
 	 * @param index
 	 */
 	handlerOnClickMenu(uid: string): void {
-		console.log(`>>>>>>>> handlerOnClickMenu`, uid);
+		this.log(`>>>>>>>> handlerOnClickMenu, ${uid}`);
 	}
 	/**
 	 * 右键列头
 	 * @param index
 	 */
 	handlerOnContextClick(uid: string): void {
-		console.log(`>>>>>>>> handlerOnContextClick`, uid);
+		this.log(`>>>>>>>> handlerOnContextClick, ${uid}`);
 	}
 	/**
 	 * 更新列名
@@ -44,7 +44,8 @@ export class AppStore implements IPreviewTableHander {
 	 * @param newName
 	 */
 	handlerRename(uid: string, newName: string): void {
-		console.log(`>>>>>>>> handlerRename`, uid, newName);
+		debugger;
+		this.log(`>>>>>>>> handlerRename, ${uid},${newName}`);
 	}
 
 	/**
@@ -52,7 +53,7 @@ export class AppStore implements IPreviewTableHander {
 	 * @param index
 	 */
 	handlerDeleteColumn(uid: string): void {
-		console.log(`>>>>>>>> handlerDeleteColumn`);
+		this.log(`>>>>>>>> handlerDeleteColumn`);
 	}
 
 	/**
@@ -61,7 +62,30 @@ export class AppStore implements IPreviewTableHander {
 	 * @param name
 	 */
 	handlerAddColumn(column: column[]): void {
-		console.log(`>>>>>>>> handlerAddColumn`);
+		this.log(`>>>>>>>> handlerAddColumn`);
+	}
+
+	/**
+	 * 点击单元格
+	 * @param rowIndex
+	 * @param colIndex
+	 */
+	handlerClickCell(rowIndex: number, colIndex: number): void {
+		this.log(`>>>>>>>> handlerClickCell,${rowIndex},${colIndex}`);
+	}
+	/**
+	 * 点击行
+	 * @param rowIndex
+	 */
+	handlerClickRow(rowIndex: number): void {
+		this.log(`>>>>>>>> handlerClickRow,${rowIndex}`);
+	}
+	/**
+	 * 点击列头
+	 * @param rowIndex
+	 */
+	handlerClickColumn(colIndex: number): void {
+		this.log(`>>>>>>>> handlerClickColunm,${colIndex}`);
 	}
 
 	/********** 回调函数 bend **********/
@@ -137,12 +161,14 @@ export class AppStore implements IPreviewTableHander {
 			note: '西湖区湖底公园1号'
 		}
 	];
+
 	test = (action: string) => {
 		let addKey = '';
 		switch (action) {
 			case 'init':
 				this.previewTableStore.onInit();
-
+				this.previewTableStore.onAddColumn(this.columns);
+				this.previewTableStore.onInitData(this.dataSource);
 				break;
 			case 'initData':
 				this.previewTableStore.onInitData(this.dataSource);
@@ -159,13 +185,23 @@ export class AppStore implements IPreviewTableHander {
 			case 'delete_colunm':
 				this.previewTableStore.onDeleteColunm('sss3');
 				break;
-			case 'addData':
-				break;
 			case 'setloading':
 				this.previewTableStore.onSetLoding();
 				break;
 			case 'clearloading':
 				this.previewTableStore.onClearLoding();
+				break;
+			case 'sel_cell':
+				this.previewTableStore.onSetSelected(2, 4);
+				break;
+			case 'sel_col':
+				this.previewTableStore.onSetSelected(-1, 3);
+				break;
+			case 'sel_row':
+				this.previewTableStore.onSetSelected(1, -1);
+				break;
+			case 'sel_none':
+				this.previewTableStore.onClearSelected();
 				break;
 			default:
 				this.log('未实现的操作');

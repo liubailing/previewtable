@@ -4,8 +4,7 @@
 
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Table, Form, Spin } from 'antd';
-import { TableProps } from 'antd/lib/table';
+import { Table, Spin, Row } from 'antd';
 import { PreviewTableStore } from './tableStore';
 import TableHeaderCell from './tableHeaderCell';
 import TableHeaderRow from './tableHeaderRow';
@@ -31,6 +30,8 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 	}
 	state = { columns: [] };
 
+	_editIndex = -1;
+
 	componentDidMount() {
 		if (!this.tableRef.current) {
 			return;
@@ -47,26 +48,13 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 
 	handleResize = (index: number) => (e: any, { size }: any) => {
 		if (index < 1) return;
-		// debugger;
-		const { loading, dataSource, columns } = this.props.store;
-		// debugger;
-		// this.setState(({ columns }: any) => {
-		// 	const nextColumns = [...columns];
-		// 	nextColumns[index] = {
-		// 		...nextColumns[index],
-		// 		width: size.width
-		// 	};
-		// 	return { columns: nextColumns };
-		// });
-
+		const { columns } = this.props.store;
 		columns.some((x, ind) => {
 			if (index === ind) {
 				x.width = size.width;
 				return true;
 			}
 		});
-
-		// this.props.store.columns = this.state.columns;
 	};
 
 	/**
@@ -87,15 +75,57 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 			x.editing = false;
 		});
 		nextColumns[index].editing = val;
+		if (val) {
+			this._editIndex = index;
+		}
 		this.setState(nextColumns);
 	};
 
-	render() {
-		const { loading, dataSource, columns } = this.props.store;
+	handlerClearColumnEdit = () => {
+		if (this._editIndex > -1) {
+			this.handlerChangeColumnEdit(this._editIndex, false);
+			this._editIndex = -1;
+		}
+	};
 
-		const newColumns = columns.map((col, index) => ({
+	handlerOnClickCell = (e: any, rowIndex: number, colIndex: number) => {
+		this.props.store.previewTableHander.handlerClickCell(rowIndex, colIndex);
+		this.handlerClearColumnEdit();
+		this.props.store.onSetSelected(rowIndex, colIndex);
+		e.preventDefault();
+	};
+
+	handlerOnClickRow = (e: any, rowIndex: number) => {
+		this.props.store.previewTableHander.handlerClickRow(rowIndex);
+		this.handlerClearColumnEdit();
+		this.props.store.onSetSelected(rowIndex, -1);
+		e.preventDefault();
+	};
+
+	getRowClassName = (record: any, index: number): string => {
+		const { selectdRowIndex, selectdColIndex } = this.props.store;
+		const className = index === selectdRowIndex && -1 === selectdColIndex ? 'selected-row' : '';
+		return className;
+	};
+
+	render() {
+		const { loading, dataSource, columns, selectdRowIndex, selectdColIndex } = this.props.store;
+
+		let newColumns: any = columns.map((col, index) => ({
 			...col,
-			...{ className: index < 1 ? 'react-resizable-index' : '' },
+			...{
+				className: `${index < 1 ? 'react-resizable-index' : ''} ${
+					index === selectdColIndex && -1 === selectdRowIndex ? 'selected-col' : ''
+				}`
+			},
+			render: (text: any, record: any, ind: number) => (
+				<div
+					onClick={(e) => this.handlerOnClickCell(e, ind, index)}
+					className={`${ind === selectdRowIndex && index === selectdColIndex ? 'selected-cell' : ''}`}
+				>
+					{text}
+				</div>
+			),
 			onHeaderCell: (column: any) => ({
 				index: index,
 				uid: col.uid,
@@ -103,13 +133,27 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 				width: column.width,
 				editing: column.editing,
 				store: this.props.store,
+				selectdRowIndex,
+				selectdColIndex,
 				callback: {
 					handlerChangeColumnTitle: this.handlerChangeColumnTitle,
-					handlerChangeColumnEdit: this.handlerChangeColumnEdit
+					handlerChangeColumnEdit: this.handlerChangeColumnEdit,
+					handlerClearColumnEdit: this.handlerClearColumnEdit
 				},
 				onResize: this.handleResize(index)
 			})
 		}));
+
+		if (newColumns.length) {
+			newColumns[0]['render'] = (text: any, record: any, index: number) => (
+				<div
+					onClick={(e) => this.handlerOnClickRow(e, index)}
+					style={{ backgroundColor: '#f0f3f8', textAlign: 'center' }}
+				>
+					{index + 1}
+				</div>
+			);
+		}
 
 		return (
 			<div className="div-previewTable">
@@ -122,6 +166,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 					columns={newColumns}
 					dataSource={dataSource}
 					components={this.components}
+					rowClassName={this.getRowClassName}
 				>
 					{/* <TableColunm editing={true} props={{}}></TableColunm> */}
 				</Table>

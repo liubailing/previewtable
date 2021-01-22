@@ -1,9 +1,24 @@
 import React from 'react';
 import { Resizable } from 'react-resizable';
 import { PreviewTableStore } from './tableStore';
+import lang from '../../../locales';
+import IconFont from '../../IconFont/IconFont';
 
 const ResizeableTitle: React.FC<any> = (props: any) => {
-	let { index, onResize, editing, width, callback, title, uid, store, children, ...restProps } = props;
+	let {
+		index,
+		onResize,
+		editing,
+		width,
+		callback,
+		title,
+		uid,
+		store,
+		children,
+		selectdRowIndex,
+		selectdColIndex,
+		...restProps
+	} = props;
 	const s = store as PreviewTableStore;
 	// editing = false;
 	if (!width) {
@@ -13,6 +28,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 	const onContextMenu = (e: any, title: string) => {
 		s.previewTableHander.handlerOnContextClick(uid);
 		e.preventDefault();
+		e.stopPropagation();
 	};
 
 	const onClickEdit = (e: any, title: string) => {
@@ -20,11 +36,13 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 			callback.handlerChangeColumnEdit(index, !editing);
 		}
 		e.preventDefault();
+		e.stopPropagation();
 	};
 
 	const onClickMenu = (e: any, title: string) => {
 		s.previewTableHander.handlerOnClickMenu(uid);
 		e.preventDefault();
+		e.stopPropagation();
 	};
 
 	const onBlurInput = (e: any, title: string) => {
@@ -43,6 +61,12 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 		e.preventDefault();
 	};
 
+	const onClickColumn = (e: any, colIndex: number) => {
+		store.previewTableHander.handlerClickColumn(colIndex);
+		s.onSetSelected(-1, colIndex);
+		callback.handlerClearColumnEdit();
+		e.preventDefault();
+	};
 
 	return (
 		<Resizable
@@ -53,13 +77,21 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 			onResize={onResize}
 			draggableOpts={{ enableUserSelectHack: false }}
 		>
-			<th {...restProps}>
-				<div className="react-resizable-th" onContextMenu={(e) => onContextMenu(e, title)}>
+			<th
+				{...restProps}
+				className={`${index > 0 && index === selectdColIndex && -1 === selectdRowIndex ? 'selected-col' : ''}`}
+			>
+				<div
+					className={`react-resizable-th`}
+					onClick={(e) => onClickColumn(e, index)}
+					onContextMenu={(e) => onContextMenu(e, title)}
+				>
 					{index > 0 ? (
 						editing ? (
 							<input
 								onChange={(e) => onChangeInput(e, title)}
 								onBlur={(e) => onBlurInput(e, title)}
+								onClick={(e) => e.stopPropagation()}
 								className="resizable-th-title"
 								value={title}
 							/>
@@ -70,7 +102,13 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 					{/* <span>{title}</span> */}
 					{index > 0 && !editing ? (
 						<span className="resizable-th-action">
-							<span onClick={(e) => onClickEdit(e, title)}>修改</span>
+							<IconFont
+								onClick={(e: React.MouseEvent) => onClickEdit(e, title)}
+								title={lang.CustomTask.EditFieldName}
+								type="icon-icon-checkin"
+								// onClick={(event: React.MouseEvent) => this.toggleEdit(event, col + 1)}
+							/>
+							{/* <span >修改</span> */}
 							<span onClick={(e) => onClickMenu(e, title)}>... </span>
 						</span>
 					) : null}

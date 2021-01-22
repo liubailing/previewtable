@@ -27,4 +27,21 @@ export interface IPreviewTableHander {
 	 * @param name
 	 */
 	handlerAddColumn(column: column[]): void;
+
+	/**
+	 * 点击单元格
+	 * @param rowIndex
+	 * @param colIndex
+	 */
+	handlerClickCell(rowIndex: number, colIndex: number): void;
+	/**
+	 * 点击行
+	 * @param rowIndex
+	 */
+	handlerClickRow(rowIndex: number): void;
+	/**
+	 * 点击列头
+	 * @param rowIndex
+	 */
+	handlerClickColumn(colIndex: number): void;
 }

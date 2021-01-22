@@ -9,6 +9,11 @@ export interface column {
 	editing: boolean;
 }
 
+export interface seletedDom {
+	rowIndex: number;
+	colIndex: number;
+}
+
 export class PreviewTableStore {
 	/** 调用 对外的暴露的接口方法 */
 	previewTableHander: IPreviewTableHander;
@@ -25,6 +30,9 @@ export class PreviewTableStore {
 
 	@observable loading: boolean = false;
 	@observable dataSource = [];
+
+	@observable selectdRowIndex: number = -1;
+	@observable selectdColIndex: number = -1;
 
 	@observable columns: column[] = [
 		{
@@ -65,10 +73,13 @@ export class PreviewTableStore {
 	}
 
 	@action
-	onUpdateColunmName(uid: string, newName: string) {
+	onUpdateColunmName(uid: string, newName: string, callbackHander: boolean = false) {
 		this.columns.some((column) => {
 			if (column.uid === uid) {
 				column.title = newName;
+				if (callbackHander) {
+					this.previewTableHander.handlerRename(uid, newName);
+				}
 				return true;
 			}
 		});
@@ -115,6 +126,15 @@ export class PreviewTableStore {
 		if (index > -1) {
 			this.columns = this.columns.slice(0, index).concat([...this.columns.slice(index + 1)]);
 		}
+	}
+
+	onSetSelected(selectdRowIndex: number, selectdColIndex: number) {
+		this.selectdColIndex = selectdColIndex;
+		this.selectdRowIndex = selectdRowIndex;
+	}
+
+	onClearSelected() {
+		this.onSetSelected(-1, -1);
 	}
 
 	@action
@@ -165,7 +185,7 @@ export class PreviewTableStore {
 		const table = this.getTable();
 		if (table) {
 			let element = table.getElementsByClassName('ant-table-tbody')[0] as HTMLElement;
-			if (this.dataSource.length < 1) {
+			if (this.dataSource.length > 1) {
 				if (element) return element;
 			}
 			element = table.getElementsByClassName('ant-table-placeholder')[0] as HTMLElement;

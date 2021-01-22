@@ -3,7 +3,6 @@
 /* eslint-disable accessor-pairs */
 import { observer } from 'mobx-react';
 import React, { Component } from 'react';
-import lang from '../../../locales';
 import AppStore from '../appStore';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

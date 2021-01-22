@@ -76,11 +76,22 @@
 /** 表格内容 ***/
 .div-previewTable .ant-table-tbody tr td {
 	line-height: 28px;
-	padding: 0 8px !important;
+	padding: 0 !important;
+	max-width: 300px;
+	/*overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap; */
+}
+
+.div-previewTable .ant-table-tbody tr td div {
+	display: flex;
+	min-height: 20px;
+	padding: 2px;
+	height: 100%;
+	max-width: calc(100% - 2px);
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	max-width: 300px;
 }
 
 /** loading */
@@ -99,4 +110,21 @@
 	position: 'absolute';
 	top: 50%;
 	margin-top: -50px;
+}
+
+/** 选中*/
+.div-previewTable .selected-row {
+	background-color: #555 !important;
+}
+
+.div-previewTable tbody tr.selected-row:hover td {
+	background-color: #555 !important;
+}
+
+.div-previewTable .selected-col {
+	background-color: #555 !important;
+}
+
+.div-previewTable .selected-cell {
+	background-color: #555 !important;
 }

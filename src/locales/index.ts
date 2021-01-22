@@ -26,6 +26,9 @@ export const lang = {
 		Paste: '粘贴',
 		Delete: '删除',
 		Cut: '剪切'
+	},
+	CustomTask: {
+		EditFieldName: '修改'
 	}
 };
 

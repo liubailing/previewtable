@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import PreviewTable from '../commonTable/privewTable/index';
+import PreviewTable from '../commonTable/previewTable/index';
 import PreviewTableMenu from './components';
 import AppStore from './appStore';
 import './app.css';
@@ -163,39 +163,40 @@ class MainTest extends React.Component<MainProps> {
 						<div>
 							<button
 								onClick={() => {
-									this.appStore.test('add_smiple');
+									this.appStore.test('sel_cell');
 								}}
 							>
-								新增列头样式
+								选择 2 4 单元格
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									this.appStore.test('add_loop');
+									this.appStore.test('sel_row');
 								}}
 							>
-								删除列头样式
+								选择第2行
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									this.appStore.test('add_smiple');
+									this.appStore.test('sel_col');
 								}}
 							>
-								新增整列样式
+								选择第3列
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									this.appStore.test('add_loop');
+									this.appStore.test('sel_none');
 								}}
 							>
-								删除整列样式
+								删除样式
 							</button>
 						</div>
+						<div> 列操作 (0开始计算)</div>
 					</div>
 				</div>
 			</>
