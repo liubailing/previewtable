@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Table, Spin, Row } from 'antd';
+import { Table, Spin } from 'antd';
 import { PreviewTableStore } from './tableStore';
 import TableHeaderCell from './tableHeaderCell';
 import TableHeaderRow from './tableHeaderRow';
@@ -47,7 +47,9 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 	};
 
 	handleResize = (index: number) => (e: any, { size }: any) => {
-		if (index < 1) return;
+		if (index < 1) {
+			return;
+		}
 		const { columns } = this.props.store;
 		columns.some((x, ind) => {
 			if (index === ind) {
@@ -104,18 +106,18 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 
 	getRowClassName = (record: any, index: number): string => {
 		const { selectdRowIndex, selectdColIndex } = this.props.store;
-		const className = index === selectdRowIndex && -1 === selectdColIndex ? 'selected-row' : '';
+		const className = index === selectdRowIndex && selectdColIndex === -1 ? 'selected-row' : '';
 		return className;
 	};
 
 	render() {
 		const { loading, dataSource, columns, selectdRowIndex, selectdColIndex } = this.props.store;
 
-		let newColumns: any = columns.map((col, index) => ({
+		const newColumns: any = columns.map((col, index) => ({
 			...col,
 			...{
 				className: `${index < 1 ? 'react-resizable-index' : ''} ${
-					index === selectdColIndex && -1 === selectdRowIndex ? 'selected-col' : ''
+					index === selectdColIndex && selectdRowIndex === -1 ? 'selected-col' : ''
 				}`
 			},
 			render: (text: any, record: any, ind: number) => (
@@ -127,7 +129,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 				</div>
 			),
 			onHeaderCell: (column: any) => ({
-				index: index,
+				index,
 				uid: col.uid,
 				title: col.title,
 				width: column.width,
@@ -170,7 +172,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 				>
 					{/* <TableColunm editing={true} props={{}}></TableColunm> */}
 				</Table>
-				<Spin spinning={loading} className={`div-previewTable-spin div-spin${this.props.taskId}`}></Spin>
+				<Spin spinning={loading} className={`div-previewTable-spin div-spin${this.props.taskId}`} />
 			</div>
 		);
 	}

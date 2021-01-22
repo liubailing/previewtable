@@ -5,7 +5,7 @@ import lang from '../../../locales';
 import IconFont from '../../IconFont/IconFont';
 
 const ResizeableTitle: React.FC<any> = (props: any) => {
-	let {
+	const {
 		index,
 		onResize,
 		editing,
@@ -14,7 +14,6 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 		title,
 		uid,
 		store,
-		children,
 		selectdRowIndex,
 		selectdColIndex,
 		...restProps
@@ -79,10 +78,10 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 		>
 			<th
 				{...restProps}
-				className={`${index > 0 && index === selectdColIndex && -1 === selectdRowIndex ? 'selected-col' : ''}`}
+				className={`${index > 0 && index === selectdColIndex && selectdRowIndex === -1 ? 'selected-col' : ''}`}
 			>
 				<div
-					className={`react-resizable-th`}
+					className="react-resizable-th"
 					onClick={(e) => onClickColumn(e, index)}
 					onContextMenu={(e) => onContextMenu(e, title)}
 				>

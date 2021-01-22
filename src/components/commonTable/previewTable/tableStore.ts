@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { IPreviewTableHander } from './tableInterface';
 import { observable, action } from 'mobx';
 
@@ -105,7 +106,7 @@ export class PreviewTableStore {
 		if (index > -1 && newColumn) {
 			newColumn = newColumn as column;
 			newColumn.uid = this.getRandomKey();
-			newColumn.title = newColumn.title + '_1';
+			newColumn.title = `${newColumn.title}_1`;
 			newColumn.dataIndex = this.getRandomKey();
 			this.columns = this.columns
 				.slice(0, index + 1)
@@ -157,7 +158,7 @@ export class PreviewTableStore {
 		return this.columns;
 	}
 
-	/*************  挂载生命周期 后台事件  */
+	/**  挂载生命周期 后台事件  */
 
 	init(taskId: string) {
 		this.taskId = taskId;
@@ -168,16 +169,20 @@ export class PreviewTableStore {
 		this.spinDom = this.getSpin();
 	}
 
-	/*************  后台事件  */
+	/**  后台事件  */
 	private getTable = (): HTMLElement | null => {
 		const element = document.getElementsByClassName(this.tableRef.current.props.className)[0] as HTMLElement;
-		if (element) return element;
+		if (element) {
+			return element;
+		}
 		return null;
 	};
 
 	private getSpin = (): HTMLElement | null => {
 		const element = document.getElementsByClassName(`div-spin${this.taskId}`)[0] as HTMLElement;
-		if (element) return element;
+		if (element) {
+			return element;
+		}
 		return null;
 	};
 
@@ -186,10 +191,14 @@ export class PreviewTableStore {
 		if (table) {
 			let element = table.getElementsByClassName('ant-table-tbody')[0] as HTMLElement;
 			if (this.dataSource.length > 1) {
-				if (element) return element;
+				if (element) {
+					return element;
+				}
 			}
 			element = table.getElementsByClassName('ant-table-placeholder')[0] as HTMLElement;
-			if (element) return element;
+			if (element) {
+				return element;
+			}
 		}
 		return null;
 	};
@@ -197,8 +206,6 @@ export class PreviewTableStore {
 	private setSpinDom = () => {
 		const table = this.getTableBody();
 		if (table) {
-			// table.style.opacity = '0.2';
-			const b = table.getBoundingClientRect();
 			this.setSpin(table);
 		}
 	};
