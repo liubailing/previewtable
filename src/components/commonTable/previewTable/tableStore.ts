@@ -8,6 +8,7 @@ export interface Column {
 	dataIndex: string;
 	width: number;
 	editing: boolean;
+	fixed?: string;
 	showmenu?: boolean;
 	menu?: any;
 }
@@ -42,7 +43,8 @@ export class PreviewTableStore {
 			uid: 'index',
 			title: '#',
 			dataIndex: 'index',
-			width: 20,
+			width: 40,
+			// fixed: 'left',
 			editing: false
 		}
 	];

@@ -48,6 +48,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 
 	const onClickMenu = (e: any) => {
 		callback.handlerOnClickColumnMenu(uid);
+		console.log(`------------->>>>>>`);
 		e.preventDefault();
 		e.stopPropagation();
 	};
@@ -88,62 +89,69 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 	};
 
 	return (
-		<Resizable
-			width={width}
-			height={0}
-			minConstraints={[100, 42]}
-			maxConstraints={[300, 42]}
-			onResize={onResize}
-			draggableOpts={{ enableUserSelectHack: false }}
-		>
-			<th
-				{...restProps}
-				className={`${index > 0 && index === selectdColIndex && selectdRowIndex === -1 ? 'selected-col' : ''}`}
-			>
-				<div
-					className="react-resizable-th"
-					onClick={(e) => onClickColumn(e, index)}
-					onContextMenu={(e) => onContextMenu(e, title)}
+		<>
+			{index > 0 ? (
+				<Resizable
+					width={width}
+					height={0}
+					minConstraints={[100, 42]}
+					maxConstraints={[300, 42]}
+					onResize={onResize}
+					draggableOpts={{ enableUserSelectHack: false }}
 				>
-					{index > 0 ? (
-						editing ? (
-							<input
-								onChange={(e) => onChangeInput(e, title)}
-								onBlur={(e) => onBlurInput(e, title)}
-								onClick={(e) => e.stopPropagation()}
-								className="resizable-th-title"
-								value={title}
-							/>
-						) : (
-							<span className="resizable-th-title">{title}</span>
-						)
-					) : null}
-					{/* <span>{title}</span> */}
-					{index > 0 && !editing ? (
-						<span className="resizable-th-action" ref={menuRef}>
-							<IconFont
-								onClick={(e: React.MouseEvent) => onClickEdit(e, title)}
-								title={lang.CustomTask.EditFieldName}
-								type="icon-icon-checkin"
-							/>
-							<Dropdown
-								placement="bottomRight"
-								// trigger={['click']}
-								visible={showmenu}
-								overlay={getColunmMenu()}
-								// onVisibleChange={getColunmMenu1}
-							>
-								<Icon
-									type="ellipsis"
-									onClick={(e: React.MouseEvent) => onClickMenu(e)}
-									title={lang.CustomTask.MoreFieldOperations}
+					<th
+						{...restProps}
+						className={`${
+							index > 0 && index === selectdColIndex && selectdRowIndex === -1 ? 'selected-col' : ''
+						}`}
+					>
+						<div
+							className="react-resizable-th"
+							onClick={(e) => onClickColumn(e, index)}
+							onContextMenu={(e) => onContextMenu(e, title)}
+						>
+							{editing ? (
+								<input
+									onChange={(e) => onChangeInput(e, title)}
+									onBlur={(e) => onBlurInput(e, title)}
+									onClick={(e) => e.stopPropagation()}
+									className="resizable-th-title"
+									value={title}
 								/>
-							</Dropdown>
-						</span>
-					) : null}
-				</div>
-			</th>
-		</Resizable>
+							) : (
+								<span title={title} className="resizable-th-title">
+									{title}
+								</span>
+							)}
+							{!editing ? (
+								<span className="resizable-th-action" ref={menuRef}>
+									<IconFont
+										onClick={(e: React.MouseEvent) => onClickEdit(e, title)}
+										title={lang.CustomTask.EditFieldName}
+										type="icon-icon-checkin"
+									/>
+									<Dropdown
+										placement="bottomRight"
+										// trigger={['click']}
+										visible={showmenu}
+										overlay={getColunmMenu()}
+										// onVisibleChange={getColunmMenu1}
+									>
+										<Icon
+											type="ellipsis"
+											onClick={(e: React.MouseEvent) => onClickMenu(e)}
+											title={lang.CustomTask.MoreFieldOperations}
+										/>
+									</Dropdown>
+								</span>
+							) : null}
+						</div>
+					</th>
+				</Resizable>
+			) : (
+				<th style={{ width: 40 }}>#</th>
+			)}
+		</>
 	);
 };
 

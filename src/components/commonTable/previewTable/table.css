@@ -1,8 +1,22 @@
+/* .div-previewTable,
+.div-previewTable .ant-table-wrapper,
+.div-previewTable .ant-spin-nested-loading,
+.div-previewTable .ant-spin-container {
+	height: 100%;
+} */
+
+.div-previewTable {
+	width: 600px;
+	height: 160px;
+	overflow: auto;
+}
+
 /** 当前表格 **/
 
 .div-previewTable .ant-table-small {
 	border: 1px solid #e8e8e8;
 	border-radius: 0px;
+	height: 100%;
 }
 
 .div-previewTable .react-resizable {
@@ -49,11 +63,12 @@
 .div-previewTable .react-resizable-th .resizable-th-title {
 	overflow: hidden;
 	text-overflow: ellipsis;
-	white-space: nowrap;
+	word-wrap: break-word;
+	/* white-space: nowrap; */
 }
 
 .div-previewTable .react-resizable-th span.resizable-th-title {
-	width: 100%;
+	width: calc(100% - 5px);
 	text-align: center;
 }
 
@@ -88,27 +103,30 @@
 .div-previewTable .ant-table-tbody tr td {
 	line-height: 28px;
 	padding: 0 !important;
-	max-width: 300px;
-	/*overflow: hidden;
+}
+
+.div-previewTable .ant-table-tbody tr td div {
+	/* min-width: 100px; */
+	display: flex;
+	min-height: 24px;
+	padding: 2px;
+	height: 28px;
+	overflow: hidden;
+	word-wrap: break-word;
+	word-break: break-all;
+	/* overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: calc(100% - 2px); */
+	/* overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap; */
 }
 
-.div-previewTable .ant-table-tbody tr td div {
-	display: flex;
-	min-height: 20px;
-	padding: 2px;
-	height: 100%;
-	max-width: calc(100% - 2px);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
 /** loading */
-.div-previewTable {
+/* .div-previewTable {
 	overflow: hidden;
-}
+} */
 
 .div-previewTable .div-previewTable-spin {
 	position: absolute;

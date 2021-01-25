@@ -9,9 +9,10 @@ import { PreviewTableStore } from './tableStore';
 import TableHeaderCell from './tableHeaderCell';
 import TableHeaderRow from './tableHeaderRow';
 
-import 'antd/lib/table/style/index.css';
-import 'antd/lib/spin/style/index.css';
-import 'antd/lib/dropdown/style/index.css';
+// import 'antd/lib/table/style/index.css';
+// import 'antd/lib/spin/style/index.css';
+// import 'antd/lib/dropdown/style/index.css';
+import 'antd/dist/antd.css';
 import './table.css';
 
 export interface PreviewTableProps {
@@ -157,6 +158,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 				editing: column.editing,
 				menu: column.editing,
 				showmenu: column.showmenu,
+				ellipsis: 'fixed',
 				store: this.props.store,
 				selectdRowIndex,
 				selectdColIndex,
@@ -174,7 +176,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 			newColumns[0]['render'] = (text: any, record: any, index: number) => (
 				<div
 					onClick={(e) => this.handlerOnClickRow(e, index)}
-					style={{ backgroundColor: '#f0f3f8', textAlign: 'center' }}
+					style={{ backgroundColor: '#f0f3f8', textAlign: 'center', width: 40 }}
 				>
 					{index + 1}
 				</div>
@@ -188,6 +190,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 					className={`div-previewTable${this.props.taskId}`}
 					ref={this.tableRef}
 					pagination={false}
+					scroll={{ x: 'max-content', y: true }}
 					bordered={true}
 					columns={newColumns}
 					dataSource={dataSource}
