@@ -28,7 +28,8 @@ export const lang = {
 		Cut: '剪切'
 	},
 	CustomTask: {
-		EditFieldName: '修改'
+		EditFieldName: '修改',
+		MoreFieldOperations: '更多'
 	}
 };
 

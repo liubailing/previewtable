@@ -20,6 +20,9 @@
 	z-index: 1;
 }
 
+.div-previewTable .ant-table-small > .ant-table-content > .ant-table-body {
+	margin: 0;
+}
 .div-previewTable .react-resizable-index .react-resizable-handle {
 	cursor: auto;
 }
@@ -71,6 +74,14 @@
 }
 .div-previewTable .react-resizable-th:hover span.resizable-th-action {
 	display: inline;
+}
+
+.div-previewTable .react-resizable-th span.resizable-th-action i:hover {
+	/* background-color: #fff; */
+}
+
+.div-previewTable .react-resizable-th span.resizable-th-action i:focus {
+	outline: none;
 }
 
 /** 表格内容 ***/

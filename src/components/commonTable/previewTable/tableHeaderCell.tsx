@@ -3,12 +3,17 @@ import { Resizable } from 'react-resizable';
 import { PreviewTableStore } from './tableStore';
 import lang from '../../../locales';
 import IconFont from '../../IconFont/IconFont';
+import { Icon, Dropdown, Menu } from 'antd';
+import SubMenu from 'antd/lib/menu/SubMenu';
 
 const ResizeableTitle: React.FC<any> = (props: any) => {
-	const {
+	let {
 		index,
+		getMenu,
+		showmenu,
 		onResize,
 		editing,
+		menu,
 		width,
 		callback,
 		title,
@@ -24,8 +29,11 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 		return <th {...restProps} />;
 	}
 
+	let menuRef: any = React.createRef();
+	let visible = false;
+
 	const onContextMenu = (e: any, title: string) => {
-		s.previewTableHander.handlerOnContextClick(uid);
+		callback.handlerOnClickColumnMenu(uid);
 		e.preventDefault();
 		e.stopPropagation();
 	};
@@ -38,8 +46,8 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 		e.stopPropagation();
 	};
 
-	const onClickMenu = (e: any, title: string) => {
-		s.previewTableHander.handlerOnClickMenu(uid);
+	const onClickMenu = (e: any) => {
+		callback.handlerOnClickColumnMenu(uid);
 		e.preventDefault();
 		e.stopPropagation();
 	};
@@ -59,6 +67,18 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 		}
 		e.preventDefault();
 	};
+
+	const getColunmMenu = (): any => {
+		const ss = s.previewTableHander.handlerGetColumnMenu(uid, index);
+		return ss ? ss : <div></div>;
+	};
+
+	// const getColunmMenu1 = (show: boolean): any => {
+	// 	// debugger;
+	// 	// return getMenu(uid, index);
+	// 	// getColunmMenu = s.previewTableHander.handlerGetColumnMenu(uid, index);
+	// 	callback.handlerGetColumnMenu(index, title);
+	// };
 
 	const onClickColumn = (e: any, colIndex: number) => {
 		store.previewTableHander.handlerClickColumn(colIndex);
@@ -100,15 +120,25 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 					) : null}
 					{/* <span>{title}</span> */}
 					{index > 0 && !editing ? (
-						<span className="resizable-th-action">
+						<span className="resizable-th-action" ref={menuRef}>
 							<IconFont
 								onClick={(e: React.MouseEvent) => onClickEdit(e, title)}
 								title={lang.CustomTask.EditFieldName}
 								type="icon-icon-checkin"
-								// onClick={(event: React.MouseEvent) => this.toggleEdit(event, col + 1)}
 							/>
-							{/* <span >修改</span> */}
-							<span onClick={(e) => onClickMenu(e, title)}>... </span>
+							<Dropdown
+								placement="bottomRight"
+								// trigger={['click']}
+								visible={showmenu}
+								overlay={getColunmMenu()}
+								// onVisibleChange={getColunmMenu1}
+							>
+								<Icon
+									type="ellipsis"
+									onClick={(e: React.MouseEvent) => onClickMenu(e)}
+									title={lang.CustomTask.MoreFieldOperations}
+								/>
+							</Dropdown>
 						</span>
 					) : null}
 				</div>

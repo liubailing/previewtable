@@ -1,15 +1,5 @@
-import { column } from './tableStore';
+import { Column } from './tableStore';
 export interface IPreviewTableHander {
-	/**
-	 * 点击列头
-	 * @param index
-	 */
-	handlerOnClickMenu: (uid: string) => void;
-	/**
-	 * 右键列头
-	 * @param index
-	 */
-	handlerOnContextClick: (uid: string) => void;
 	/**
 	 * 更新列名
 	 * @param index
@@ -26,7 +16,7 @@ export interface IPreviewTableHander {
 	 * @param index
 	 * @param name
 	 */
-	handlerAddColumn: (column: column[]) => void;
+	handlerAddColumn: (column: Column[]) => void;
 
 	/**
 	 * 点击单元格
@@ -44,4 +34,10 @@ export interface IPreviewTableHander {
 	 * @param rowIndex
 	 */
 	handlerClickColumn: (colIndex: number) => void;
+
+	/**
+	 * 获取菜单
+	 * @param rowIndex
+	 */
+	handlerGetColumnMenu: (uid: string, colIndex: number) => any;
 }

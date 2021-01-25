@@ -28,20 +28,18 @@ class MainTest extends React.Component<MainProps> {
 
 	componentDidMount() {
 		this.appStore.test('render');
+		this.appStore.handlerGetColumnMenu = this.getMenu;
 	}
+
+	getMenu = (uid: string, colIndex: number): JSX.Element => {
+		return <PreviewTableMenu store={this.appStore} uid={uid} colIndex={colIndex} />;
+	};
 
 	render() {
 		return (
 			<>
 				<div className="div-preview-main" id={`div-Main${this.props.taskId}`}>
 					<div className="div-preview">
-						<div
-							style={{
-								position: `relative`
-							}}
-						>
-							<PreviewTableMenu store={this.appStore} />
-						</div>
 						<PreviewTable taskId={this.props.taskId} store={this.appStore.previewTableStore}></PreviewTable>
 					</div>
 					<div className="div-logs">

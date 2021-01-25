@@ -1,7 +1,7 @@
 import { IPreviewTableHander } from '../commonTable/previewTable/tableInterface';
-import { PreviewTableStore, column } from '../commonTable/previewTable/tableStore';
-
-import { observable } from 'mobx';
+import { PreviewTableStore, Column } from '../commonTable/previewTable/tableStore';
+import PreviewTableMenu from './components/index';
+import { observable, action } from 'mobx';
 
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
@@ -25,20 +25,6 @@ export class AppStore implements IPreviewTableHander {
 	/********** 回调函数 begin **********/
 
 	/**
-	 * 点击列头
-	 * @param index
-	 */
-	handlerOnClickMenu(uid: string): void {
-		this.log(`>>>>>>>> handlerOnClickMenu, ${uid}`);
-	}
-	/**
-	 * 右键列头
-	 * @param index
-	 */
-	handlerOnContextClick(uid: string): void {
-		this.log(`>>>>>>>> handlerOnContextClick, ${uid}`);
-	}
-	/**
 	 * 更新列名
 	 * @param index
 	 * @param newName
@@ -61,7 +47,7 @@ export class AppStore implements IPreviewTableHander {
 	 * @param index
 	 * @param name
 	 */
-	handlerAddColumn(column: column[]): void {
+	handlerAddColumn(column: Column[]): void {
 		this.log(`>>>>>>>> handlerAddColumn`);
 	}
 
@@ -80,6 +66,7 @@ export class AppStore implements IPreviewTableHander {
 	handlerClickRow(rowIndex: number): void {
 		this.log(`>>>>>>>> handlerClickRow,${rowIndex}`);
 	}
+
 	/**
 	 * 点击列头
 	 * @param rowIndex
@@ -87,6 +74,8 @@ export class AppStore implements IPreviewTableHander {
 	handlerClickColumn(colIndex: number): void {
 		this.log(`>>>>>>>> handlerClickColunm,${colIndex}`);
 	}
+
+	handlerGetColumnMenu(uid: string, colIndex: number): any {}
 
 	/********** 回调函数 bend **********/
 
@@ -163,7 +152,6 @@ export class AppStore implements IPreviewTableHander {
 	];
 
 	test = (action: string) => {
-		let addKey = '';
 		switch (action) {
 			case 'init':
 				this.previewTableStore.onInit();

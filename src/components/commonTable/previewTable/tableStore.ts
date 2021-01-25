@@ -2,12 +2,14 @@
 import { IPreviewTableHander } from './tableInterface';
 import { observable, action } from 'mobx';
 
-export interface column {
+export interface Column {
 	uid: string;
 	title: string;
 	dataIndex: string;
 	width: number;
 	editing: boolean;
+	showmenu?: boolean;
+	menu?: any;
 }
 
 export interface seletedDom {
@@ -35,7 +37,7 @@ export class PreviewTableStore {
 	@observable selectdRowIndex: number = -1;
 	@observable selectdColIndex: number = -1;
 
-	@observable columns: column[] = [
+	@observable columns: Column[] = [
 		{
 			uid: 'index',
 			title: '#',
@@ -54,7 +56,7 @@ export class PreviewTableStore {
 	 * @param column
 	 */
 	@action
-	onAddColumn(column: column[]): boolean {
+	onAddColumn(column: Column[]): boolean {
 		let res = true;
 		column.some((x) => {
 			if (this.columns.find((y) => y.dataIndex === x.dataIndex)) {
@@ -92,9 +94,9 @@ export class PreviewTableStore {
 	 * @param colunm  复制后，要修改的参数，为一个类似colunm参数 object。用来覆盖被复制的列属性。主要是给 uid、dataIndex、title 赋值
 	 */
 	@action
-	onCopyColunm(uid: string, colunm?: any): column | null {
+	onCopyColunm(uid: string, colunm?: any): Column | null {
 		let index = -1;
-		let newColumn: column | null = null;
+		let newColumn: Column | null = null;
 		this.columns.some((column, ind) => {
 			if (column.uid === uid) {
 				newColumn = { ...column };
@@ -104,7 +106,7 @@ export class PreviewTableStore {
 		});
 
 		if (index > -1 && newColumn) {
-			newColumn = newColumn as column;
+			newColumn = newColumn as Column;
 			newColumn.uid = this.getRandomKey();
 			newColumn.title = `${newColumn.title}_1`;
 			newColumn.dataIndex = this.getRandomKey();
@@ -127,6 +129,22 @@ export class PreviewTableStore {
 		if (index > -1) {
 			this.columns = this.columns.slice(0, index).concat([...this.columns.slice(index + 1)]);
 		}
+	}
+
+	@action
+	onShowColunmMenu(uid: string) {
+		let index = -1;
+		this.columns.forEach((column, ind) => {
+			column.showmenu = column.uid === uid;
+		});
+	}
+
+	@action
+	onHideColunmMenu() {
+		let index = -1;
+		this.columns.forEach((column, ind) => {
+			column.showmenu = false;
+		});
 	}
 
 	onSetSelected(selectdRowIndex: number, selectdColIndex: number) {

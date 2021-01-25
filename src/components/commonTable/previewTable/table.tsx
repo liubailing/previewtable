@@ -11,11 +11,13 @@ import TableHeaderRow from './tableHeaderRow';
 
 import 'antd/lib/table/style/index.css';
 import 'antd/lib/spin/style/index.css';
+import 'antd/lib/dropdown/style/index.css';
 import './table.css';
 
 export interface PreviewTableProps {
 	taskId: string;
 	store: PreviewTableStore;
+	// getMenu: Function;
 }
 
 @observer
@@ -32,11 +34,19 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 
 	_editIndex = -1;
 
+	_editMore = true;
+
 	componentDidMount() {
 		if (!this.tableRef.current) {
 			return;
 		}
 		this.props.store.didMountTable(this.tableRef);
+		document.addEventListener('click', (e) => {
+			if (this._editMore) {
+				this.props.store.onHideColunmMenu();
+			}
+			this._editMore = true;
+		});
 	}
 
 	components = {
@@ -90,6 +100,17 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		}
 	};
 
+	/**  */
+	handlerOnClickColumnMenu = (uid: string) => {
+		this._editMore = false;
+		const nextColumns = [...this.props.store.columns];
+		nextColumns.forEach((x) => {
+			x.showmenu = x.uid === uid;
+		});
+
+		this.setState(nextColumns);
+	};
+
 	handlerOnClickCell = (e: any, rowIndex: number, colIndex: number) => {
 		this.props.store.previewTableHander.handlerClickCell(rowIndex, colIndex);
 		this.handlerClearColumnEdit();
@@ -134,13 +155,16 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 				title: col.title,
 				width: column.width,
 				editing: column.editing,
+				menu: column.editing,
+				showmenu: column.showmenu,
 				store: this.props.store,
 				selectdRowIndex,
 				selectdColIndex,
 				callback: {
 					handlerChangeColumnTitle: this.handlerChangeColumnTitle,
 					handlerChangeColumnEdit: this.handlerChangeColumnEdit,
-					handlerClearColumnEdit: this.handlerClearColumnEdit
+					handlerClearColumnEdit: this.handlerClearColumnEdit,
+					handlerOnClickColumnMenu: this.handlerOnClickColumnMenu
 				},
 				onResize: this.handleResize(index)
 			})
