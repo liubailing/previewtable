@@ -6,8 +6,6 @@
 } */
 
 .div-previewTable {
-	width: 600px;
-	height: 160px;
 	overflow: auto;
 }
 
@@ -61,19 +59,19 @@
 }
 
 .div-previewTable .react-resizable-th .resizable-th-title {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	word-wrap: break-word;
-	/* white-space: nowrap; */
+	white-space: nowrap;
 }
 
 .div-previewTable .react-resizable-th span.resizable-th-title {
-	width: calc(100% - 5px);
+	/* width: calc(100% - 5px); */
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
 	text-align: center;
 }
 
 .div-previewTable .react-resizable-th:hover span.resizable-th-title {
-	width: calc(100% - 50px);
+	width: calc(100% - 50px) !important;
 }
 
 .div-previewTable .react-resizable-th input.resizable-th-title {
@@ -114,13 +112,14 @@
 	overflow: hidden;
 	word-wrap: break-word;
 	word-break: break-all;
-	/* overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	max-width: calc(100% - 2px); */
-	/* overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap; */
+}
+
+.div-previewTable .ant-table-tbody tr td div.row-index {
+	background-color: #f0f3f8;
+	display: block;
+	text-align: center;
+	width: 40px;
+	cursor: pointer;
 }
 
 /** loading */

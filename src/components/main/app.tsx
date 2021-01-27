@@ -27,7 +27,7 @@ class MainTest extends React.Component<MainProps> {
 	}
 
 	componentDidMount() {
-		this.appStore.test('render');
+		this.appStore.test('init');
 		this.appStore.handlerGetColumnMenu = this.getMenu;
 	}
 
@@ -119,6 +119,15 @@ class MainTest extends React.Component<MainProps> {
 								}}
 							>
 								删除列
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									this.appStore.test('show_menu');
+								}}
+							>
+								显示惨淡
 							</button>
 						</div>
 					</div>

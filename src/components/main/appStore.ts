@@ -140,54 +140,19 @@ export class AppStore implements IPreviewTableHander {
 		}
 	];
 
-	dataSource = [
-		{
-			key: '1',
-			index: '1',
-			date: '胡彦斌',
-			amount: 32,
-			note: '西湖区湖底公园1号'
-		},
-		{
-			key: '2',
-			index: '2',
-			date: '胡彦祖',
-			amount: 42,
-			note: '西湖区湖底公园1号'
-		},
-		{
-			key: '3',
-			index: '2',
-			date: '胡彦祖',
-			amount: 42,
-			note:
-				'西湖区湖底公园1号 西湖区湖底公园1号  西湖区湖底公园1号  西湖区湖底公园1号 西湖区湖底公园1号 西湖区湖底公园1号 西湖区湖底公园1号  da'
-		},
-		{
-			key: '4',
-			index: '2',
-			date: '胡彦祖',
-			amount: 42,
-			note: '西湖区湖底公园1号'
-		},
-		{
-			key: '5',
-			index: '2',
-			date: '胡彦祖',
-			amount: 42,
-			note: '西湖区湖底公园1号'
-		}
-	];
-
 	test = (action: string) => {
 		switch (action) {
 			case 'init':
 				this.previewTableStore.onInit();
+				this.previewTableStore.onSetTableHeight(100);
 				this.previewTableStore.onAddColumn(this.columns);
-				this.previewTableStore.onInitData(this.dataSource);
+				setTimeout(() => {
+					this.previewTableStore.onInitData(this.getDataSource(100));
+				}, 5000);
+				// this.previewTableStore.onInitData(this.getDataSource(1));
 				break;
 			case 'initData':
-				this.previewTableStore.onInitData(this.dataSource);
+				this.previewTableStore.onInitData(this.getDataSource(10));
 				break;
 			case 'add_colunm':
 				this.previewTableStore.onAddColumn(this.columns);
@@ -219,11 +184,29 @@ export class AppStore implements IPreviewTableHander {
 			case 'sel_none':
 				this.previewTableStore.onClearSelected();
 				break;
+
+			case 'show_menu':
+				this.previewTableStore.onShowColunmMenu('sss1');
+				break;
 			default:
 				this.log('未实现的操作');
 				break;
 		}
 	};
+
+	getDataSource(count: number = 0) {
+		const data = [];
+		for (let i = 0; i < count; i++) {
+			data.push({
+				key: `row_${i}`,
+				index: i,
+				date: '胡彦斌_' + i,
+				amount: 32 + i,
+				note: `西湖区湖底公园1号_${i}单元`
+			});
+		}
+		return data;
+	}
 }
 
 export default AppStore;

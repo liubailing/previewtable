@@ -29,7 +29,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 	constructor(props: PreviewTableProps) {
 		super(props);
 		this.tableRef = React.createRef();
-		this.props.store.init(this.props.taskId);
+		this.props.store.init(this.props.taskId, this.handlerOnClickColumnMenu);
 	}
 	state = { columns: [] };
 
@@ -48,6 +48,8 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 			}
 			this._editMore = true;
 		});
+
+		this.props.store._handlerOnClickColumnMenu = this.handlerOnClickColumnMenu;
 	}
 
 	components = {
@@ -103,12 +105,13 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 
 	/**  */
 	handlerOnClickColumnMenu = (uid: string) => {
+		debugger;
 		this._editMore = false;
 		const nextColumns = [...this.props.store.columns];
 		nextColumns.forEach((x) => {
 			x.showmenu = x.uid === uid;
 		});
-
+		this.props.store.clickMenuColIndex = uid;
 		this.setState(nextColumns);
 	};
 
@@ -133,51 +136,50 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 	};
 
 	render() {
-		const { loading, dataSource, columns, selectdRowIndex, selectdColIndex } = this.props.store;
-
-		const newColumns: any = columns.map((col, index) => ({
-			...col,
-			...{
-				className: `${index < 1 ? 'react-resizable-index' : ''} ${
-					index === selectdColIndex && selectdRowIndex === -1 ? 'selected-col' : ''
-				}`
-			},
-			render: (text: any, record: any, ind: number) => (
-				<div
-					onClick={(e) => this.handlerOnClickCell(e, ind, index)}
-					className={`${ind === selectdRowIndex && index === selectdColIndex ? 'selected-cell' : ''}`}
-				>
-					{text}
-				</div>
-			),
-			onHeaderCell: (column: any) => ({
-				index,
-				uid: col.uid,
-				title: col.title,
-				width: column.width,
-				editing: column.editing,
-				menu: column.editing,
-				showmenu: column.showmenu,
-				ellipsis: 'fixed',
-				store: this.props.store,
-				selectdRowIndex,
-				selectdColIndex,
-				callback: {
-					handlerChangeColumnTitle: this.handlerChangeColumnTitle,
-					handlerChangeColumnEdit: this.handlerChangeColumnEdit,
-					handlerClearColumnEdit: this.handlerClearColumnEdit,
-					handlerOnClickColumnMenu: this.handlerOnClickColumnMenu
+		const { loading, dataSource, columns, selectdRowIndex, selectdColIndex, tableHeight } = this.props.store;
+		let columnWidth = 0;
+		const newColumns: any = columns.map((col, index) => {
+			columnWidth += col.width || 0;
+			return {
+				...col,
+				...{
+					className: `${index < 1 ? 'react-resizable-index' : ''} ${
+						index === selectdColIndex && selectdRowIndex === -1 ? 'selected-col' : ''
+					}`
 				},
-				onResize: this.handleResize(index)
-			})
-		}));
+				render: (text: any, record: any, ind: number) => (
+					<div
+						onClick={(e) => this.handlerOnClickCell(e, ind, index)}
+						className={`${ind === selectdRowIndex && index === selectdColIndex ? 'selected-cell' : ''}`}
+					>
+						{text}
+					</div>
+				),
+				onHeaderCell: (column: any) => ({
+					index,
+					uid: col.uid,
+					title: col.title,
+					width: column.width,
+					editing: column.editing,
+					menu: column.editing,
+					showmenu: column.showmenu,
+					store: this.props.store,
+					selectdRowIndex,
+					selectdColIndex,
+					callback: {
+						handlerChangeColumnTitle: this.handlerChangeColumnTitle,
+						handlerChangeColumnEdit: this.handlerChangeColumnEdit,
+						handlerClearColumnEdit: this.handlerClearColumnEdit,
+						handlerOnClickColumnMenu: this.handlerOnClickColumnMenu
+					},
+					onResize: this.handleResize(index)
+				})
+			};
+		});
 
 		if (newColumns.length) {
 			newColumns[0]['render'] = (text: any, record: any, index: number) => (
-				<div
-					onClick={(e) => this.handlerOnClickRow(e, index)}
-					style={{ backgroundColor: '#f0f3f8', textAlign: 'center', width: 40 }}
-				>
+				<div onClick={(e) => this.handlerOnClickRow(e, index)} className={'row-index'}>
 					{index + 1}
 				</div>
 			);
@@ -186,11 +188,14 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		return (
 			<div className="div-previewTable">
 				<Table
+					// style={{ width: tableWidth, height: tableHeight }}
 					size="small"
 					className={`div-previewTable${this.props.taskId}`}
 					ref={this.tableRef}
 					pagination={false}
-					scroll={{ x: 'max-content', y: true }}
+					scroll={{ x: 'max-content', y: tableHeight }}
+					// scroll={{ x: columnWidth, y: tableHeight }}
+					// scroll={{ x: dataSource.length > 0 ? 'max-content' : columnWidth, y: tableHeight }}
 					bordered={true}
 					columns={newColumns}
 					dataSource={dataSource}

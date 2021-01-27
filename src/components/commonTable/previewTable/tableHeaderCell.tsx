@@ -106,6 +106,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 						}`}
 					>
 						<div
+							style={{ width: width < 100 ? 100 : width -5 }}
 							className="react-resizable-th"
 							onClick={(e) => onClickColumn(e, index)}
 							onContextMenu={(e) => onContextMenu(e, title)}
@@ -119,7 +120,11 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 									value={title}
 								/>
 							) : (
-								<span title={title} className="resizable-th-title">
+								<span
+									style={{ width: width < 100 ? 100 : width - 5 }}
+									title={title}
+									className="resizable-th-title"
+								>
 									{title}
 								</span>
 							)}
@@ -149,7 +154,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 					</th>
 				</Resizable>
 			) : (
-				<th style={{ width: 40 }}>#</th>
+				<th style={{ width: 40 }}></th>
 			)}
 		</>
 	);

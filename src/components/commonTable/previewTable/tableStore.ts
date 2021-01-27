@@ -6,7 +6,7 @@ export interface Column {
 	uid: string;
 	title: string;
 	dataIndex: string;
-	width: number;
+	width?: number;
 	editing: boolean;
 	fixed?: string;
 	showmenu?: boolean;
@@ -35,8 +35,12 @@ export class PreviewTableStore {
 	@observable loading: boolean = false;
 	@observable dataSource = [];
 
+	@observable tableHeight: number = 200;
+
 	@observable selectdRowIndex: number = -1;
 	@observable selectdColIndex: number = -1;
+
+	@observable clickMenuColIndex: string = '';
 
 	@observable columns: Column[] = [
 		{
@@ -44,10 +48,14 @@ export class PreviewTableStore {
 			title: '#',
 			dataIndex: 'index',
 			width: 40,
-			// fixed: 'left',
+			fixed: 'left',
 			editing: false
 		}
 	];
+
+	@observable
+	_handlerOnClickColumnMenu: Function = (uid: string) => {};
+
 	@action
 	onInit() {
 		this.columns = this.columns.slice(0, 1);
@@ -69,11 +77,14 @@ export class PreviewTableStore {
 
 		if (res) {
 			this.columns = this.columns.concat(column);
+			// 回调函数
 			this.previewTableHander.handlerAddColumn(column);
 		} else {
 			console.error('列不能有相同的 dataIndex');
 		}
-
+		if (this.columns.length > 1) {
+			// delete this.columns[this.columns.length - 1].width;
+		}
 		return res;
 	}
 
@@ -135,10 +146,12 @@ export class PreviewTableStore {
 
 	@action
 	onShowColunmMenu(uid: string) {
-		let index = -1;
-		this.columns.forEach((column, ind) => {
-			column.showmenu = column.uid === uid;
-		});
+		// let index = -1;
+		// this.columns.forEach((column, ind) => {
+		// 	column.showmenu = column.uid === uid;
+		// });
+		this._handlerOnClickColumnMenu(uid);
+		debugger;
 	}
 
 	@action
@@ -164,6 +177,16 @@ export class PreviewTableStore {
 	@action
 	onInitData(dataSource: any) {
 		this.dataSource = dataSource;
+		if (this.clickMenuColIndex) {
+			this.onShowColunmMenu(this.clickMenuColIndex);
+		}
+	}
+
+	@action
+	onSetTableHeight(height: number = 0) {
+		if (height > 50) {
+			this.tableHeight = height;
+		}
 	}
 
 	onSetLoding() {
@@ -180,8 +203,9 @@ export class PreviewTableStore {
 
 	/**  挂载生命周期 后台事件  */
 
-	init(taskId: string) {
+	init(taskId: string, callbackHander: Function) {
 		this.taskId = taskId;
+		this._handlerOnClickColumnMenu = callbackHander;
 	}
 
 	didMountTable(tableRef: any) {
@@ -234,8 +258,8 @@ export class PreviewTableStore {
 		const bounding = dom.getBoundingClientRect();
 		if (this.spinDom && bounding) {
 			this.spinDom.style.display = 'block';
-			this.spinDom.style.height = `${bounding.height}px`;
-			this.spinDom.style.width = `${bounding.width}px`;
+			this.spinDom.style.height = `${this.tableHeight}px`;
+			this.spinDom.style.width = `${bounding.width - 10}px`;
 			this.spinDom.style.top = `${bounding.y}px`;
 			this.spinDom.style.left = `${bounding.x}px`;
 			this.currSpinDom = dom;
@@ -247,8 +271,8 @@ export class PreviewTableStore {
 			const bounding = this.currSpinDom.getBoundingClientRect();
 			if (this.spinDom && bounding) {
 				this.spinDom.style.display = 'block';
-				this.spinDom.style.height = `${bounding.height}px`;
-				this.spinDom.style.width = `${bounding.width}px`;
+				this.spinDom.style.height = `${this.tableHeight}px`;
+				this.spinDom.style.width = `${bounding.width - 10}px`;
 				this.spinDom.style.top = `${bounding.y}px`;
 				this.spinDom.style.left = `${bounding.x}px`;
 			}
