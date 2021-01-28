@@ -116,28 +116,28 @@ export class AppStore implements IPreviewTableHander {
 			dataIndex: 'date1',
 			width: 100,
 			editing: false
-		},
-		{
-			uid: 'sss31',
-			title: 'Amount',
-			dataIndex: 'amount1',
-			width: 100,
-			editing: false
-		},
-		{
-			uid: 'sss21',
-			title: 'Type',
-			dataIndex: 'type1',
-			width: 100,
-			editing: false
-		},
-		{
-			uid: 'sss11',
-			title: 'Note',
-			dataIndex: 'note1',
-			width: 100,
-			editing: false
 		}
+		// {
+		// 	uid: 'sss31',
+		// 	title: 'Amount',
+		// 	dataIndex: 'amount1',
+		// 	width: 100,
+		// 	editing: false
+		// },
+		// {
+		// 	uid: 'sss21',
+		// 	title: 'Type',
+		// 	dataIndex: 'type1',
+		// 	width: 100,
+		// 	editing: false
+		// },
+		// {
+		// 	uid: 'sss11',
+		// 	title: 'Note',
+		// 	dataIndex: 'note1',
+		// 	width: 100,
+		// 	editing: false
+		// }
 	];
 
 	test = (action: string) => {

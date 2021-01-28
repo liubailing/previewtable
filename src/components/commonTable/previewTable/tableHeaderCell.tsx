@@ -1,10 +1,9 @@
 import React from 'react';
+import { Icon, Dropdown } from 'antd';
 import { Resizable } from 'react-resizable';
 import { PreviewTableStore } from './tableStore';
 import lang from '../../../locales';
 import IconFont from '../../IconFont/IconFont';
-import { Icon, Dropdown, Menu } from 'antd';
-import SubMenu from 'antd/lib/menu/SubMenu';
 
 const ResizeableTitle: React.FC<any> = (props: any) => {
 	let {
@@ -32,13 +31,13 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 	let menuRef: any = React.createRef();
 	let visible = false;
 
-	const onContextMenu = (e: any, title: string) => {
+	const onContextMenu = (e: any) => {
 		callback.handlerOnClickColumnMenu(uid);
 		e.preventDefault();
 		e.stopPropagation();
 	};
 
-	const onClickEdit = (e: any, title: string) => {
+	const onClickEdit = (e: any) => {
 		if (callback && callback.handlerChangeColumnEdit) {
 			callback.handlerChangeColumnEdit(index, !editing);
 		}
@@ -48,12 +47,11 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 
 	const onClickMenu = (e: any) => {
 		callback.handlerOnClickColumnMenu(uid);
-		console.log(`------------->>>>>>`);
 		e.preventDefault();
 		e.stopPropagation();
 	};
 
-	const onBlurInput = (e: any, title: string) => {
+	const onBlurInput = (e: any) => {
 		if (callback && callback.handlerChangeColumnEdit) {
 			callback.handlerChangeColumnEdit(index, false);
 		}
@@ -61,29 +59,25 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 		e.preventDefault();
 	};
 
-	const onChangeInput = (e: any, title: string) => {
-		title = e.target.value;
+	const onChangeInput = (e: any) => {
+		const currTitle = e.target.value;
 		if (callback && callback.handlerChangeColumnTitle) {
-			callback.handlerChangeColumnTitle(index, title);
+			// 防止卡死
+			setTimeout(() => {
+				callback.handlerChangeColumnTitle(index, currTitle);
+			}, 16);
 		}
 		e.preventDefault();
 	};
 
 	const getColunmMenu = (): any => {
-		const ss = s.previewTableHander.handlerGetColumnMenu(uid, index);
-		return ss ? ss : <div></div>;
+		const divMenu = s.previewTableHander.handlerGetColumnMenu(uid, index);
+		return divMenu ? divMenu : <div></div>;
 	};
 
-	// const getColunmMenu1 = (show: boolean): any => {
-	// 	// debugger;
-	// 	// return getMenu(uid, index);
-	// 	// getColunmMenu = s.previewTableHander.handlerGetColumnMenu(uid, index);
-	// 	callback.handlerGetColumnMenu(index, title);
-	// };
-
-	const onClickColumn = (e: any, colIndex: number) => {
-		store.previewTableHander.handlerClickColumn(colIndex);
-		s.onSetSelected(-1, colIndex);
+	const onClickColumn = (e: any) => {
+		store.previewTableHander.handlerClickColumn(index);
+		s.onSetSelected(-1, index);
 		callback.handlerClearColumnEdit();
 		e.preventDefault();
 	};
@@ -106,32 +100,25 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 						}`}
 					>
 						<div
-							style={{ width: width < 100 ? 100 : width -5 }}
 							className="react-resizable-th"
-							onClick={(e) => onClickColumn(e, index)}
-							onContextMenu={(e) => onContextMenu(e, title)}
+							onClick={(e) => onClickColumn(e)}
+							onContextMenu={(e) => onContextMenu(e)}
 						>
 							{editing ? (
 								<input
-									onChange={(e) => onChangeInput(e, title)}
-									onBlur={(e) => onBlurInput(e, title)}
+									onChange={(e) => onChangeInput(e)}
+									onBlur={(e) => onBlurInput(e)}
 									onClick={(e) => e.stopPropagation()}
-									className="resizable-th-title"
+									className="th-input-write"
 									value={title}
 								/>
 							) : (
-								<span
-									style={{ width: width < 100 ? 100 : width - 5 }}
-									title={title}
-									className="resizable-th-title"
-								>
-									{title}
-								</span>
+								<input className="th-input-read" value={title} disabled={true} readOnly={true} />
 							)}
 							{!editing ? (
 								<span className="resizable-th-action" ref={menuRef}>
 									<IconFont
-										onClick={(e: React.MouseEvent) => onClickEdit(e, title)}
+										onClick={(e: React.MouseEvent) => onClickEdit(e)}
 										title={lang.CustomTask.EditFieldName}
 										type="icon-icon-checkin"
 									/>

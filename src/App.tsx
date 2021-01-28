@@ -15,11 +15,9 @@ import Main from './components/main/app';
 class App extends React.Component<{}> {
 	public render() {
 		return (
-			<>
-				<div style={{ width: '99%', float: 'left' }}>
-					<Main key="1sdsds" taskId="sdasdawwcc"></Main>
-				</div>
-			</>
+			<div>
+				<Main key="1sdsds" taskId="sdasdawwcc"></Main>
+			</div>
 		);
 	}
 }

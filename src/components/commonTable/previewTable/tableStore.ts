@@ -11,6 +11,7 @@ export interface Column {
 	fixed?: string;
 	showmenu?: boolean;
 	menu?: any;
+	belongTo?: string;
 }
 
 export interface seletedDom {
@@ -42,7 +43,9 @@ export class PreviewTableStore {
 
 	@observable clickMenuColIndex: string = '';
 
-	@observable columns: Column[] = [
+	_columnWidth = 0;
+
+	_columnIndex: Column[] = [
 		{
 			uid: 'index',
 			title: '#',
@@ -52,6 +55,8 @@ export class PreviewTableStore {
 			editing: false
 		}
 	];
+
+	@observable columns: Column[] = this._columnIndex;
 
 	@observable
 	_handlerOnClickColumnMenu: Function = (uid: string) => {};
@@ -175,6 +180,28 @@ export class PreviewTableStore {
 	onAddInsertColumn(uid: string, column: any) {}
 
 	@action
+	onInitColunms(column: Column[]) {
+		let res = true;
+		this.columns = this._columnIndex;
+		column.some((x) => {
+			if (this.columns.find((y) => y.dataIndex === x.dataIndex)) {
+				res = false;
+				return true;
+			}
+		});
+
+		if (res) {
+			this.columns = this.columns.concat(column);
+		} else {
+			console.error('列不能有相同的 dataIndex');
+		}
+		if (this.columns.length > 1) {
+			// delete this.columns[this.columns.length - 1].width;
+		}
+		return res;
+	}
+
+	@action
 	onInitData(dataSource: any) {
 		this.dataSource = dataSource;
 		if (this.clickMenuColIndex) {
@@ -248,18 +275,26 @@ export class PreviewTableStore {
 	};
 
 	private setSpinDom = () => {
-		const table = this.getTableBody();
-		if (table) {
-			this.setSpin(table);
+		const tableBody = this.getTableBody();
+
+		if (tableBody) {
+			this.setSpin(tableBody);
 		}
 	};
 
 	private setSpin = (dom: HTMLElement) => {
 		const bounding = dom.getBoundingClientRect();
 		if (this.spinDom && bounding) {
+			const table = this.getTable();
+			let maxWidth = bounding.width;
+			if (table) {
+				if (maxWidth > table.getBoundingClientRect().width) {
+					maxWidth = table.getBoundingClientRect().width;
+				}
+			}
 			this.spinDom.style.display = 'block';
 			this.spinDom.style.height = `${this.tableHeight}px`;
-			this.spinDom.style.width = `${bounding.width - 10}px`;
+			this.spinDom.style.width = `${maxWidth}px`;
 			this.spinDom.style.top = `${bounding.y}px`;
 			this.spinDom.style.left = `${bounding.x}px`;
 			this.currSpinDom = dom;
@@ -283,6 +318,8 @@ export class PreviewTableStore {
 		if (this.spinDom) {
 			this.spinDom.style.display = 'none';
 			this.currSpinDom = null;
+			this.spinDom.style.height = `0px`;
+			this.spinDom.style.width = `0px`;
 		}
 	};
 

@@ -25,6 +25,7 @@ export interface IPreviewTableHander {
 	 */
 	handlerClickCell: (rowIndex: number, colIndex: number) => void;
 	/**
+	 * 
 	 * 点击行
 	 * @param rowIndex
 	 */

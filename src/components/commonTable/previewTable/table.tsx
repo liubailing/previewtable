@@ -2,7 +2,7 @@
  *  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
  */
 
-import * as React from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import { Table, Spin } from 'antd';
 import { PreviewTableStore } from './tableStore';
@@ -49,7 +49,9 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 			this._editMore = true;
 		});
 
-		this.props.store._handlerOnClickColumnMenu = this.handlerOnClickColumnMenu;
+		this.props.store._handlerOnClickColumnMenu = (uid: string) => {
+			this.handlerOnClickColumnMenu(uid);
+		};
 	}
 
 	components = {
@@ -137,9 +139,9 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 
 	render() {
 		const { loading, dataSource, columns, selectdRowIndex, selectdColIndex, tableHeight } = this.props.store;
-		let columnWidth = 0;
+		this.props.store._columnWidth = 0;
 		const newColumns: any = columns.map((col, index) => {
-			columnWidth += col.width || 0;
+			this.props.store._columnWidth += col.width || 0;
 			return {
 				...col,
 				...{
