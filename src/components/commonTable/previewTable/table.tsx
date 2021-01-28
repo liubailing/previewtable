@@ -9,16 +9,15 @@ import { PreviewTableStore } from './tableStore';
 import TableHeaderCell from './tableHeaderCell';
 import TableHeaderRow from './tableHeaderRow';
 
-// import 'antd/lib/table/style/index.css';
-// import 'antd/lib/spin/style/index.css';
-// import 'antd/lib/dropdown/style/index.css';
-import 'antd/dist/antd.css';
+import 'antd/lib/table/style/index.css';
+import 'antd/lib/spin/style/index.css';
+import 'antd/lib/dropdown/style/index.css';
+// import 'antd/dist/antd.css';
 import './table.css';
 
 export interface PreviewTableProps {
 	taskId: string;
 	store: PreviewTableStore;
-	// getMenu: Function;
 }
 
 @observer
@@ -107,7 +106,6 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 
 	/**  */
 	handlerOnClickColumnMenu = (uid: string) => {
-		debugger;
 		this._editMore = false;
 		const nextColumns = [...this.props.store.columns];
 		nextColumns.forEach((x) => {
@@ -145,7 +143,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 			return {
 				...col,
 				...{
-					className: `${index < 1 ? 'react-resizable-index' : ''} ${
+					className: `${index < 1 ? 'react-resizable-index' : 'react-resizable-cell'} ${
 						index === selectdColIndex && selectdRowIndex === -1 ? 'selected-col' : ''
 					}`
 				},
@@ -154,7 +152,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 						onClick={(e) => this.handlerOnClickCell(e, ind, index)}
 						className={`${ind === selectdRowIndex && index === selectdColIndex ? 'selected-cell' : ''}`}
 					>
-						{text}
+						<span>{text}</span>
 					</div>
 				),
 				onHeaderCell: (column: any) => ({
@@ -181,7 +179,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 
 		if (newColumns.length) {
 			newColumns[0]['render'] = (text: any, record: any, index: number) => (
-				<div onClick={(e) => this.handlerOnClickRow(e, index)} className={'row-index'}>
+				<div onClick={(e) => this.handlerOnClickRow(e, index)} className="row-index">
 					{index + 1}
 				</div>
 			);

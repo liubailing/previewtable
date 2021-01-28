@@ -147,8 +147,8 @@ export class AppStore implements IPreviewTableHander {
 				this.previewTableStore.onSetTableHeight(100);
 				this.previewTableStore.onAddColumn(this.columns);
 				setTimeout(() => {
-					this.previewTableStore.onInitData(this.getDataSource(100));
-				}, 5000);
+					this.previewTableStore.onInitData(this.getDataSource(10));
+				}, 1000);
 				// this.previewTableStore.onInitData(this.getDataSource(1));
 				break;
 			case 'initData':

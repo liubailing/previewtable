@@ -1,18 +1,9 @@
-/* .div-previewTable,
-.div-previewTable .ant-table-wrapper,
-.div-previewTable .ant-spin-nested-loading,
-.div-previewTable .ant-spin-container {
-	height: 100%;
-} */
-
 .div-previewTable {
 	overflow: auto;
 }
 
 /** 当前表格 **/
-
 .div-previewTable .ant-table-small {
-	border: 1px solid #e8e8e8;
 	border-radius: 0px;
 	height: 100%;
 }
@@ -27,7 +18,7 @@
 	width: 10px;
 	height: 100%;
 	bottom: 0;
-	right: -5px;
+	right: 0;
 	cursor: col-resize;
 	z-index: 1;
 }
@@ -40,22 +31,28 @@
 }
 
 /* 头部样式 */
-
+.div-previewTable th.th-index {
+	/* min-width: 40px; */
+	background-color: #f0f3f8 !important;
+}
+.div-previewTable .ant-table-header {
+	background-color: #f0f3f8 !important;
+}
 .div-previewTable .ant-table-thead tr th {
-	padding: 1px !important;
+	padding: 2px 8px !important;
 }
 
 .div-previewTable .ant-table-thead .react-resizable-th {
 	position: relative;
-	height: 28px;
-	line-height: 26px;
+	height: 34px;
+	padding: 0;
 	display: flex;
 }
 
 .div-previewTable .react-resizable-th .th-input-read {
+	background-color: #f0f3f8;
 	width: 100% !important;
 	text-align: center;
-	width: 100%;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
@@ -69,55 +66,56 @@
 
 .div-previewTable .react-resizable-th input.th-input-write {
 	width: 100%;
-	min-width: 80px;
-	text-indent: 5px;
 }
-/** 头部操作 **/
+/** 表头操作 **/
+
 .div-previewTable .react-resizable-th span.resizable-th-action {
 	position: absolute;
 	right: 5px;
-	top: 0;
+	top: 8px;
 	display: none;
 	cursor: pointer;
-	/* margin-right: 5px; */
 }
 .div-previewTable .react-resizable-th:hover span.resizable-th-action {
-	display: inline;
+	display: block;
 }
 
 .div-previewTable .react-resizable-th span.resizable-th-action i:focus {
 	outline: none;
 }
 
-/** 表格内容 ***/
+/** 表格行 ***/
 .div-previewTable .ant-table-tbody tr td {
-	line-height: 28px;
 	padding: 0 !important;
 }
 
-.div-previewTable .ant-table-tbody tr td div {
-	/* min-width: 100px; */
-	display: flex;
-	min-height: 24px;
-	padding: 2px;
-	height: 28px;
+.div-previewTable .ant-table-tbody .react-resizable-cell {
+	padding: 0 5px !important;
+	min-width: 80px;
+}
+
+.div-previewTable .ant-table-tbody tr td > div {
+	position: relative;
+}
+.div-previewTable .ant-table-tbody tr td > div > span {
+	display: block;
+	position: absolute;
+	width: 100%;
+	left: 0;
+	top: -10px;
 	overflow: hidden;
-	word-wrap: break-word;
-	word-break: break-all;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .div-previewTable .ant-table-tbody tr td div.row-index {
 	background-color: #f0f3f8;
 	display: block;
 	text-align: center;
-	width: 40px;
+	height: 38px;
+	line-height: 38px;
 	cursor: pointer;
 }
-
-/** loading */
-/* .div-previewTable {
-	overflow: hidden;
-} */
 
 .div-previewTable .div-previewTable-spin {
 	position: absolute;
@@ -133,18 +131,27 @@
 }
 
 /** 选中*/
-.div-previewTable .selected-row {
-	background-color: #555 !important;
-}
-
-.div-previewTable tbody tr.selected-row:hover td {
-	background-color: #555 !important;
-}
-
-.div-previewTable .selected-col {
-	background-color: #555 !important;
-}
-
+.div-previewTable .selected-row,
+.div-previewTable tbody tr.selected-row:hover td,
+.div-previewTable .selected-col,
+.div-previewTable .selected-col .th-input-read,
 .div-previewTable .selected-cell {
-	background-color: #555 !important;
+	background-color: #a3cef0 !important;
+}
+
+/**  下拉菜单*/
+.ant-dropdown.ant-dropdown-placement-bottomRight {
+	top: 0 !important;
+}
+
+.ant-dropdown .ant-menu {
+	position: absolute;
+	width: 150px;
+	right: -7px;
+	text-align: left;
+	padding: 5px;
+}
+
+.ant-dropdown .ant-menu li:hover {
+	background-color: #e6f4ff !important;
 }

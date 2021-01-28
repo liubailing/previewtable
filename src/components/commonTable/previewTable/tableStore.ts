@@ -88,7 +88,7 @@ export class PreviewTableStore {
 			console.error('列不能有相同的 dataIndex');
 		}
 		if (this.columns.length > 1) {
-			// delete this.columns[this.columns.length - 1].width;
+			delete this.columns[this.columns.length - 1].width;
 		}
 		return res;
 	}
@@ -161,7 +161,7 @@ export class PreviewTableStore {
 
 	@action
 	onHideColunmMenu() {
-		let index = -1;
+		const index = -1;
 		this.columns.forEach((column, ind) => {
 			column.showmenu = false;
 		});
@@ -196,7 +196,7 @@ export class PreviewTableStore {
 			console.error('列不能有相同的 dataIndex');
 		}
 		if (this.columns.length > 1) {
-			// delete this.columns[this.columns.length - 1].width;
+			delete this.columns[this.columns.length - 1].width;
 		}
 		return res;
 	}
@@ -242,9 +242,12 @@ export class PreviewTableStore {
 
 	/**  后台事件  */
 	private getTable = (): HTMLElement | null => {
-		const element = document.getElementsByClassName(this.tableRef.current.props.className)[0] as HTMLElement;
-		if (element) {
-			return element;
+		if (this.tableRef) {
+			const element = document.getElementsByClassName(this.tableRef.current.props.className)[0] as HTMLElement;
+
+			if (element) {
+				return element;
+			}
 		}
 		return null;
 	};
@@ -257,16 +260,21 @@ export class PreviewTableStore {
 		return null;
 	};
 
-	private getTableBody = (): HTMLElement | null => {
+	getTableBody = (): HTMLElement | null => {
 		const table = this.getTable();
 		if (table) {
-			let element = table.getElementsByClassName('ant-table-tbody')[0] as HTMLElement;
-			if (this.dataSource.length > 1) {
-				if (element) {
-					return element;
-				}
+			const element = table.getElementsByClassName('ant-table-tbody')[0] as HTMLElement;
+			if (element) {
+				return element;
 			}
-			element = table.getElementsByClassName('ant-table-placeholder')[0] as HTMLElement;
+		}
+		return null;
+	};
+
+	getTableNoPlaceholder = (): HTMLElement | null => {
+		const table = this.getTable();
+		if (table) {
+			const element = table.getElementsByClassName('ant-table-placeholder')[0] as HTMLElement;
 			if (element) {
 				return element;
 			}

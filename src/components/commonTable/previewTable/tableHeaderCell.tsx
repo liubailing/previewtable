@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import React from 'react';
 import { Icon, Dropdown } from 'antd';
 import { Resizable } from 'react-resizable';
@@ -6,7 +7,7 @@ import lang from '../../../locales';
 import IconFont from '../../IconFont/IconFont';
 
 const ResizeableTitle: React.FC<any> = (props: any) => {
-	let {
+	const {
 		index,
 		getMenu,
 		showmenu,
@@ -28,8 +29,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 		return <th {...restProps} />;
 	}
 
-	let menuRef: any = React.createRef();
-	let visible = false;
+	const menuRef: any = React.createRef();
 
 	const onContextMenu = (e: any) => {
 		callback.handlerOnClickColumnMenu(uid);
@@ -72,7 +72,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 
 	const getColunmMenu = (): any => {
 		const divMenu = s.previewTableHander.handlerGetColumnMenu(uid, index);
-		return divMenu ? divMenu : <div></div>;
+		return divMenu ? divMenu : <div />;
 	};
 
 	const onClickColumn = (e: any) => {
@@ -103,6 +103,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 							className="react-resizable-th"
 							onClick={(e) => onClickColumn(e)}
 							onContextMenu={(e) => onContextMenu(e)}
+							title={title}
 						>
 							{editing ? (
 								<input
@@ -123,6 +124,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 										type="icon-icon-checkin"
 									/>
 									<Dropdown
+										getPopupContainer={() => s.getTableNoPlaceholder() || document.body}
 										placement="bottomRight"
 										// trigger={['click']}
 										visible={showmenu}
@@ -141,7 +143,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 					</th>
 				</Resizable>
 			) : (
-				<th style={{ width: 40 }}></th>
+				<th style={{ width: '40' }} className="th-index" />
 			)}
 		</>
 	);
