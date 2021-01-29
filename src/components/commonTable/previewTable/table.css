@@ -90,19 +90,22 @@
 }
 
 .div-previewTable .ant-table-tbody .react-resizable-cell {
-	padding: 0 5px !important;
+	padding: 0 2px !important;
 	min-width: 80px;
 }
 
 .div-previewTable .ant-table-tbody tr td > div {
 	position: relative;
+	height: 36px;
+	padding: 0 5px !important;
 }
 .div-previewTable .ant-table-tbody tr td > div > span {
-	display: block;
+	display: inline-block;
 	position: absolute;
+	text-indent: 3px;
 	width: 100%;
 	left: 0;
-	top: -10px;
+	top: 8px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -141,17 +144,18 @@
 
 /**  下拉菜单*/
 .ant-dropdown.ant-dropdown-placement-bottomRight {
-	top: 0 !important;
+	/* top: 0 !important; */
 }
 
 .ant-dropdown .ant-menu {
 	position: absolute;
-	width: 150px;
-	right: -7px;
+	right: -14px;
 	text-align: left;
 	padding: 5px;
 }
-
+.ant-dropdown .ant-menu li {
+	margin: 0;
+}
 .ant-dropdown .ant-menu li:hover {
 	background-color: #e6f4ff !important;
 }

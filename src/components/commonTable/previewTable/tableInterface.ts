@@ -23,9 +23,9 @@ export interface IPreviewTableHander {
 	 * @param rowIndex
 	 * @param colIndex
 	 */
-	handlerClickCell: (rowIndex: number, colIndex: number) => void;
+	handlerClickCell: (uid: string, rowIndex: number, colIndex: number) => void;
 	/**
-	 * 
+	 *
 	 * 点击行
 	 * @param rowIndex
 	 */
@@ -34,7 +34,7 @@ export interface IPreviewTableHander {
 	 * 点击列头
 	 * @param rowIndex
 	 */
-	handlerClickColumn: (colIndex: number) => void;
+	handlerClickColumn: (uid: string, colIndex: number) => void;
 
 	/**
 	 * 获取菜单

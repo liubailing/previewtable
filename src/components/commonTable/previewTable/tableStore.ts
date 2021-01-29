@@ -6,12 +6,13 @@ export interface Column {
 	uid: string;
 	title: string;
 	dataIndex: string;
-	width?: number;
 	editing: boolean;
+	width?: number;
 	fixed?: string;
 	showmenu?: boolean;
-	menu?: any;
 	belongTo?: string;
+	menuType?: string;
+	menu?: any;
 }
 
 export interface seletedDom {
@@ -88,7 +89,7 @@ export class PreviewTableStore {
 			console.error('列不能有相同的 dataIndex');
 		}
 		if (this.columns.length > 1) {
-			delete this.columns[this.columns.length - 1].width;
+			// delete this.columns[this.columns.length - 1].width;
 		}
 		return res;
 	}
@@ -151,17 +152,11 @@ export class PreviewTableStore {
 
 	@action
 	onShowColunmMenu(uid: string) {
-		// let index = -1;
-		// this.columns.forEach((column, ind) => {
-		// 	column.showmenu = column.uid === uid;
-		// });
 		this._handlerOnClickColumnMenu(uid);
-		debugger;
 	}
 
 	@action
 	onHideColunmMenu() {
-		const index = -1;
 		this.columns.forEach((column, ind) => {
 			column.showmenu = false;
 		});
@@ -183,21 +178,7 @@ export class PreviewTableStore {
 	onInitColunms(column: Column[]) {
 		let res = true;
 		this.columns = this._columnIndex;
-		column.some((x) => {
-			if (this.columns.find((y) => y.dataIndex === x.dataIndex)) {
-				res = false;
-				return true;
-			}
-		});
-
-		if (res) {
-			this.columns = this.columns.concat(column);
-		} else {
-			console.error('列不能有相同的 dataIndex');
-		}
-		if (this.columns.length > 1) {
-			delete this.columns[this.columns.length - 1].width;
-		}
+		res = this.onAddColumn(column);
 		return res;
 	}
 

@@ -30,7 +30,6 @@ export class AppStore implements IPreviewTableHander {
 	 * @param newName
 	 */
 	handlerRename(uid: string, newName: string): void {
-		debugger;
 		this.log(`>>>>>>>> handlerRename, ${uid},${newName}`);
 	}
 
@@ -56,8 +55,8 @@ export class AppStore implements IPreviewTableHander {
 	 * @param rowIndex
 	 * @param colIndex
 	 */
-	handlerClickCell(rowIndex: number, colIndex: number): void {
-		this.log(`>>>>>>>> handlerClickCell,${rowIndex},${colIndex}`);
+	handlerClickCell(uid: string, rowIndex: number, colIndex: number): void {
+		this.log(`>>>>>>>> handlerClickCell,${uid},${rowIndex},${colIndex}`);
 	}
 	/**
 	 * 点击行
@@ -71,8 +70,8 @@ export class AppStore implements IPreviewTableHander {
 	 * 点击列头
 	 * @param rowIndex
 	 */
-	handlerClickColumn(colIndex: number): void {
-		this.log(`>>>>>>>> handlerClickColunm,${colIndex}`);
+	handlerClickColumn(uid: string, colIndex: number): void {
+		this.log(`>>>>>>>> handlerClickColunm,${uid},${colIndex}`);
 	}
 
 	handlerGetColumnMenu(uid: string, colIndex: number): any {}

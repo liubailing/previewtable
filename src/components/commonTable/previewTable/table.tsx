@@ -9,10 +9,10 @@ import { PreviewTableStore } from './tableStore';
 import TableHeaderCell from './tableHeaderCell';
 import TableHeaderRow from './tableHeaderRow';
 
-import 'antd/lib/table/style/index.css';
-import 'antd/lib/spin/style/index.css';
-import 'antd/lib/dropdown/style/index.css';
-// import 'antd/dist/antd.css';
+// import 'antd/lib/table/style/index.css';
+// import 'antd/lib/spin/style/index.css';
+// import 'antd/lib/dropdown/style/index.css';
+
 import './table.css';
 
 export interface PreviewTableProps {
@@ -115,8 +115,8 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		this.setState(nextColumns);
 	};
 
-	handlerOnClickCell = (e: any, rowIndex: number, colIndex: number) => {
-		this.props.store.previewTableHander.handlerClickCell(rowIndex, colIndex);
+	handlerOnClickCell = (e: any, uid: string, rowIndex: number, colIndex: number) => {
+		this.props.store.previewTableHander.handlerClickCell(uid, rowIndex, colIndex);
 		this.handlerClearColumnEdit();
 		this.props.store.onSetSelected(rowIndex, colIndex);
 		e.preventDefault();
@@ -149,7 +149,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 				},
 				render: (text: any, record: any, ind: number) => (
 					<div
-						onClick={(e) => this.handlerOnClickCell(e, ind, index)}
+						onClick={(e) => this.handlerOnClickCell(e, columns[index].uid, ind, index)}
 						className={`${ind === selectdRowIndex && index === selectdColIndex ? 'selected-cell' : ''}`}
 					>
 						<span>{text}</span>
@@ -193,7 +193,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 					className={`div-previewTable${this.props.taskId}`}
 					ref={this.tableRef}
 					pagination={false}
-					scroll={{ x: 'max-content', y: tableHeight }}
+					scroll={{ x: 'max-content', y: 'max-content' }}
 					// scroll={{ x: columnWidth, y: tableHeight }}
 					// scroll={{ x: dataSource.length > 0 ? 'max-content' : columnWidth, y: tableHeight }}
 					bordered={true}

@@ -7,6 +7,10 @@ import { observer } from 'mobx-react';
 import PreviewTable from '../commonTable/previewTable/index';
 import PreviewTableMenu from './components';
 import AppStore from './appStore';
+
+import 'antd/lib/table/style/index.css';
+import 'antd/lib/spin/style/index.css';
+import 'antd/lib/dropdown/style/index.css';
 import './app.css';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
