@@ -77,6 +77,24 @@ class MainTest extends React.Component<MainProps> {
 						<div>
 							<button
 								onClick={() => {
+									this.appStore.test('init_colounm');
+								}}
+							>
+								初始化表头
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									this.appStore.test('re_colounm');
+								}}
+							>
+								重新渲染表头
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
 									this.appStore.test('initData');
 								}}
 							>

@@ -32,6 +32,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 	const menuRef: any = React.createRef();
 
 	const onContextMenu = (e: any) => {
+		debugger;
 		callback.handlerOnClickColumnMenu(uid);
 		e.preventDefault();
 		e.stopPropagation();
@@ -76,7 +77,7 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 	};
 
 	const onClickColumn = (e: any) => {
-		store.previewTableHander.handlerClickColumn(index);
+		store.previewTableHander.handlerClickColumn(uid, index);
 		s.onSetSelected(-1, index);
 		callback.handlerClearColumnEdit();
 		e.preventDefault();
@@ -114,29 +115,35 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 									value={title}
 								/>
 							) : (
-								<input className="th-input-read" value={title} disabled={true} readOnly={true} />
+								<div className="th-input-read">
+									<span>{title}</span>
+								</div>
 							)}
 							{!editing ? (
 								<span className="resizable-th-action" ref={menuRef}>
-									<IconFont
-										onClick={(e: React.MouseEvent) => onClickEdit(e)}
-										title={lang.CustomTask.EditFieldName}
-										type="icon-icon-checkin"
-									/>
-									<Dropdown
-										getPopupContainer={() => s.getTableNoPlaceholder() || document.body}
-										placement="bottomRight"
-										// trigger={['click']}
-										visible={showmenu}
-										overlay={getColunmMenu()}
-										// onVisibleChange={getColunmMenu1}
-									>
-										<Icon
-											type="ellipsis"
-											onClick={(e: React.MouseEvent) => onClickMenu(e)}
-											title={lang.CustomTask.MoreFieldOperations}
+									<div style={{ position: 'relative' }}>
+										<IconFont
+											onClick={(e: React.MouseEvent) => onClickEdit(e)}
+											title={lang.CustomTask.EditFieldName}
+											type="icon-icon-checkin"
 										/>
-									</Dropdown>
+										<Dropdown
+											getPopupContainer={() => {
+												return s.getTableNoPlaceholder() || document.body;
+											}}
+											placement="bottomRight"
+											// trigger={['click']}
+											visible={showmenu}
+											overlay={getColunmMenu()}
+											// onVisibleChange={getColunmMenu1}
+										>
+											<Icon
+												type="ellipsis"
+												onClick={(e: React.MouseEvent) => onClickMenu(e)}
+												title={lang.CustomTask.MoreFieldOperations}
+											/>
+										</Dropdown>
+									</div>
 								</span>
 							) : null}
 						</div>

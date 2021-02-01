@@ -39,13 +39,23 @@ export class PreviewTableStore {
 
 	@observable tableHeight: number = 200;
 
+	/** 选中的行 */
 	@observable selectdRowIndex: number = -1;
+	/** 选中的列 */
 	@observable selectdColIndex: number = -1;
 
+	/** 打开菜单所在列 */
 	@observable clickMenuColIndex: string = '';
 
-	_columnWidth = 0;
+	/** 列总宽度 */
+	_colTotalWidth = 0;
 
+	/** 单列最小宽度 */
+	_colMinWidth = 100;
+	/** 缓存宽度 */
+	_mapWidth = new Map<string, number>().set('index', 40);
+
+	/** 默认第一列 */
 	_columnIndex: Column[] = [
 		{
 			uid: 'index',
@@ -74,11 +84,11 @@ export class PreviewTableStore {
 	@action
 	onAddColumn(column: Column[]): boolean {
 		let res = true;
-		column.some((x) => {
+		column.forEach((x) => {
 			if (this.columns.find((y) => y.dataIndex === x.dataIndex)) {
 				res = false;
-				return true;
 			}
+			x.width = this._mapWidth.has(x.uid) ? this._mapWidth.get(x.uid) : this._colMinWidth;
 		});
 
 		if (res) {
@@ -178,6 +188,15 @@ export class PreviewTableStore {
 	onInitColunms(column: Column[]) {
 		let res = true;
 		this.columns = this._columnIndex;
+		this._mapWidth = new Map<string, number>().set('index', 40);
+		res = this.onAddColumn(column);
+		return res;
+	}
+
+	@action
+	onReRenderColunms(column: Column[]) {
+		let res = true;
+		this.columns = this._columnIndex;
 		res = this.onAddColumn(column);
 		return res;
 	}
@@ -241,7 +260,7 @@ export class PreviewTableStore {
 		return null;
 	};
 
-	getTableBody = (): HTMLElement | null => {
+	private getTableBody = (): HTMLElement | null => {
 		const table = this.getTable();
 		if (table) {
 			const element = table.getElementsByClassName('ant-table-tbody')[0] as HTMLElement;

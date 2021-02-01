@@ -64,9 +64,11 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		if (index < 1) {
 			return;
 		}
+
 		const { columns } = this.props.store;
 		columns.some((x, ind) => {
 			if (index === ind) {
+				this.props.store._mapWidth.set(x.uid, size.width);
 				x.width = size.width;
 				return true;
 			}
@@ -109,7 +111,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		this._editMore = false;
 		const nextColumns = [...this.props.store.columns];
 		nextColumns.forEach((x) => {
-			x.showmenu = x.uid === uid;
+			x.showmenu = x.uid === uid && !x.showmenu;
 		});
 		this.props.store.clickMenuColIndex = uid;
 		this.setState(nextColumns);
@@ -137,9 +139,9 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 
 	render() {
 		const { loading, dataSource, columns, selectdRowIndex, selectdColIndex, tableHeight } = this.props.store;
-		this.props.store._columnWidth = 0;
+		this.props.store._colTotalWidth = 0;
 		const newColumns: any = columns.map((col, index) => {
-			this.props.store._columnWidth += col.width || 0;
+			this.props.store._colTotalWidth += col.width || 0;
 			return {
 				...col,
 				...{

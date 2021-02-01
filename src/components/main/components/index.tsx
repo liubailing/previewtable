@@ -31,11 +31,20 @@ export default class PreviewTableMenu extends Component<PreviewTableMenuProps> {
 	render() {
 		return (
 			<div>
-				<Menu onClick={() => this.props.store.previewTableStore.onHideColunmMenu()}>
+				<Menu className="preview-menu" onClick={() => this.props.store.previewTableStore.onHideColunmMenu()}>
 					<Menu.Item>菜单项 {this.props.uid}</Menu.Item>
 					<Menu.Item>index {this.props.colIndex}</Menu.Item>
-					<SubMenu title="子菜单">
+					<SubMenu title="子菜单" className="preview-menu">
 						<Menu.Item>子菜单项 {this.props.colIndex}</Menu.Item>
+						<Menu.Item>子菜单项 3</Menu.Item>
+						<SubMenu title="子菜单三" className="preview-menu">
+							<Menu.Item>子菜单项 {this.props.colIndex}</Menu.Item>
+							<Menu.Item>子菜单项3 1</Menu.Item>
+							<Menu.Item>子菜单项3 4</Menu.Item>
+							<Menu.Item>子菜单项3 5</Menu.Item>
+						</SubMenu>
+						<Menu.Item>子菜单项 4</Menu.Item>
+						<Menu.Item>子菜单项 5</Menu.Item>
 					</SubMenu>
 				</Menu>
 			</div>
