@@ -8,6 +8,13 @@
 	height: 100%;
 }
 
+.div-previewTable .ant-table-small .ant-table-placeholder {
+	display: none;
+	/* visibility: hidden; */
+	padding: 0;
+	border: none;
+}
+
 .div-previewTable .react-resizable {
 	position: relative;
 	background-clip: padding-box;
@@ -33,6 +40,7 @@
 /* 头部样式 */
 .div-previewTable th.th-index {
 	/* min-width: 40px; */
+	text-align: center;
 	background-color: #f0f3f8 !important;
 }
 .div-previewTable .ant-table-header {
@@ -53,7 +61,7 @@
 	position: relative;
 	background-color: #f0f3f8;
 	width: 100% !important;
-	text-align: center;
+	text-align: left;
 }
 .div-previewTable .react-resizable-th .th-input-read > span {
 	display: inline-block;
@@ -69,12 +77,17 @@
 
 .div-previewTable .react-resizable-th:hover .th-input-read {
 	width: calc(100% - 40px) !important;
-	text-align: left;
 }
 
 .div-previewTable .react-resizable-th input.th-input-write {
 	width: 100%;
 }
+
+.div-previewTable .react-resizable-th input.input-write-warn {
+	border-color: red !important;
+	outline: none;
+}
+
 /** 表头操作 **/
 .div-previewTable .react-resizable-th span.resizable-th-action {
 	position: absolute;

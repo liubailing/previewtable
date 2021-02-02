@@ -122,7 +122,16 @@ class MainTest extends React.Component<MainProps> {
 									this.appStore.test('update_colunmName');
 								}}
 							>
-								修改列名
+								直接修改列名
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									this.appStore.test('set_update_colunmName');
+								}}
+							>
+								设置为修改列
 							</button>
 						</div>
 						<div>

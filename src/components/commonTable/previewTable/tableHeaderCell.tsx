@@ -1,126 +1,113 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Icon, Dropdown } from 'antd';
 import { Resizable } from 'react-resizable';
-import { PreviewTableStore } from './tableStore';
+import { PreviewTableStore, Column } from './tableStore';
 import lang from '../../../locales';
 import IconFont from '../../IconFont/IconFont';
 
-const ResizeableTitle: React.FC<any> = (props: any) => {
-	const {
-		index,
-		getMenu,
-		showmenu,
-		onResize,
-		editing,
-		menu,
-		width,
-		callback,
-		title,
-		uid,
-		store,
-		selectdRowIndex,
-		selectdColIndex,
-		...restProps
-	} = props;
-	const s = store as PreviewTableStore;
-	// editing = false;
-	if (!width) {
-		return <th {...restProps} />;
+export interface PreviewTableCEllProps {
+	index: number;
+	store: PreviewTableStore;
+	column: Column;
+}
+
+const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
+	const { index, store, column } = props;
+	if (!column.width) {
+		return <th />;
 	}
 
-	const menuRef: any = React.createRef();
+	// const inputRef: any = React.createRef();
+
+	// useEffect(() => {
+	// 	store._onSetRef(inputRef);
+	// 	// 请求或者弹窗的处理
+	// }, []);
 
 	const onContextMenu = (e: any) => {
-		debugger;
-		callback.handlerOnClickColumnMenu(uid);
-		e.preventDefault();
-		e.stopPropagation();
-	};
-
-	const onClickEdit = (e: any) => {
-		if (callback && callback.handlerChangeColumnEdit) {
-			callback.handlerChangeColumnEdit(index, !editing);
-		}
+		store.onSetSelected(-1, column.uid);
+		store._onClickColumnMenu(column.uid);
 		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	const onClickMenu = (e: any) => {
-		callback.handlerOnClickColumnMenu(uid);
+		store.onSetSelected(-1, column.uid);
+		store._onClickColumnMenu(column.uid);
+		e.preventDefault();
+		e.stopPropagation();
+	};
+
+	const onClickEdit = (e: any) => {
+		store.onSetSelected(-1, column.uid);
+		store._onChangeColumnEditing(column.uid, true);
 		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	const onBlurInput = (e: any) => {
-		if (callback && callback.handlerChangeColumnEdit) {
-			callback.handlerChangeColumnEdit(index, false);
-		}
-		s.previewTableHander.handlerRename(uid, e.target.value);
+		store._onChangeColumnEditing(column.uid, false);
+		store.previewTableHander.handlerRename(column.uid, e.target.value);
 		e.preventDefault();
 	};
 
 	const onChangeInput = (e: any) => {
 		const currTitle = e.target.value;
-		if (callback && callback.handlerChangeColumnTitle) {
-			// 防止卡死
-			setTimeout(() => {
-				callback.handlerChangeColumnTitle(index, currTitle);
-			}, 16);
-		}
+		setTimeout(() => {
+			store._onChangeColumnTitle(column.uid, currTitle);
+		}, 16);
 		e.preventDefault();
 	};
 
-	const getColunmMenu = (): any => {
-		const divMenu = s.previewTableHander.handlerGetColumnMenu(uid, index);
-		return divMenu ? divMenu : <div />;
-	};
-
 	const onClickColumn = (e: any) => {
-		store.previewTableHander.handlerClickColumn(uid, index);
-		s.onSetSelected(-1, index);
-		callback.handlerClearColumnEdit();
+		store.previewTableHander.handlerClickColumn(column.uid, index);
+		store.onSetSelected(-1, column.uid);
 		e.preventDefault();
 	};
 
 	return (
 		<>
-			{index > 0 ? (
+			{column.uid !== store._indexUId ? (
 				<Resizable
-					width={width}
+					width={column.width}
 					height={0}
 					minConstraints={[100, 42]}
 					maxConstraints={[300, 42]}
-					onResize={onResize}
+					onResize={store._onResize(column.uid)}
 					draggableOpts={{ enableUserSelectHack: false }}
 				>
 					<th
-						{...restProps}
+						// {...restProps}
 						className={`${
-							index > 0 && index === selectdColIndex && selectdRowIndex === -1 ? 'selected-col' : ''
+							column.uid === store.selectdColIndexUId && store.selectdRowIndex === -1
+								? 'selected-col'
+								: ''
 						}`}
 					>
 						<div
 							className="react-resizable-th"
 							onClick={(e) => onClickColumn(e)}
 							onContextMenu={(e) => onContextMenu(e)}
-							title={title}
+							title={column.title}
 						>
-							{editing ? (
+							{column.editing ? (
 								<input
 									onChange={(e) => onChangeInput(e)}
 									onBlur={(e) => onBlurInput(e)}
 									onClick={(e) => e.stopPropagation()}
-									className="th-input-write"
-									value={title}
+									className={`th-input-write th-input-${column.uid} ${
+										column.editWarning ? 'input-write-warn' : ''
+									}`}
+									value={column.title}
 								/>
 							) : (
 								<div className="th-input-read">
-									<span>{title}</span>
+									<span>{column.title}</span>
 								</div>
 							)}
-							{!editing ? (
-								<span className="resizable-th-action" ref={menuRef}>
+							{!column.editing ? (
+								<span className="resizable-th-action" ref={column.menuRef}>
 									<div style={{ position: 'relative' }}>
 										<IconFont
 											onClick={(e: React.MouseEvent) => onClickEdit(e)}
@@ -129,17 +116,17 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 										/>
 										<Dropdown
 											getPopupContainer={() => {
-												return s.getTableNoPlaceholder() || document.body;
+												return store.getTableNoPlaceholder() || document.body;
 											}}
 											placement="bottomRight"
 											// trigger={['click']}
-											visible={showmenu}
-											overlay={getColunmMenu()}
+											visible={column.showmenu}
+											overlay={store.previewTableHander.handlerGetColumnMenu(column.uid, index)}
 											// onVisibleChange={getColunmMenu1}
 										>
 											<Icon
 												type="ellipsis"
-												onClick={(e: React.MouseEvent) => onClickMenu(e)}
+												onClick={(e) => onClickMenu(e)}
 												title={lang.CustomTask.MoreFieldOperations}
 											/>
 										</Dropdown>
@@ -150,7 +137,9 @@ const ResizeableTitle: React.FC<any> = (props: any) => {
 					</th>
 				</Resizable>
 			) : (
-				<th style={{ width: '40' }} className="th-index" />
+				<th style={{ width: '40' }} className="th-index">
+					#
+				</th>
 			)}
 		</>
 	);

@@ -12,7 +12,9 @@ export interface Column {
 	showmenu?: boolean;
 	belongTo?: string;
 	menuType?: string;
-	menu?: any;
+	editWarning?: boolean;
+	menuRef?: any;
+	inputRef?: any;
 }
 
 export interface seletedDom {
@@ -42,35 +44,38 @@ export class PreviewTableStore {
 	/** 选中的行 */
 	@observable selectdRowIndex: number = -1;
 	/** 选中的列 */
-	@observable selectdColIndex: number = -1;
+	@observable selectdColIndexUId: string = '';
 
 	/** 打开菜单所在列 */
 	@observable clickMenuColIndex: string = '';
 
+	readonly _indexUId: string = 'table-index';
+
 	/** 列总宽度 */
 	_colTotalWidth = 0;
-
 	/** 单列最小宽度 */
 	_colMinWidth = 100;
 	/** 缓存宽度 */
 	_mapWidth = new Map<string, number>().set('index', 40);
 
 	/** 默认第一列 */
-	_columnIndex: Column[] = [
+	readonly _columnIndex: Column[] = [
 		{
-			uid: 'index',
+			uid: this._indexUId,
 			title: '#',
 			dataIndex: 'index',
 			width: 40,
-			fixed: 'left',
+			// fixed: 'left',
 			editing: false
 		}
 	];
 
-	@observable columns: Column[] = this._columnIndex;
+	/** 正在点击按钮 */
+	_editMore = true;
+	/**  */
+	_editUId = '';
 
-	@observable
-	_handlerOnClickColumnMenu: Function = (uid: string) => {};
+	@observable columns: Column[] = this._columnIndex;
 
 	@action
 	onInit() {
@@ -104,17 +109,44 @@ export class PreviewTableStore {
 		return res;
 	}
 
+	/**
+	 * 修改样式名
+	 * @param uid
+	 * @param newName
+	 * @param callbackHander
+	 */
 	@action
 	onUpdateColunmName(uid: string, newName: string, callbackHander: boolean = false) {
-		this.columns.some((column) => {
+		this.columns.forEach((column) => {
 			if (column.uid === uid) {
 				column.title = newName;
 				if (callbackHander) {
 					this.previewTableHander.handlerRename(uid, newName);
 				}
-				return true;
 			}
 		});
+	}
+
+	/**
+	 * 进入修改名称状态
+	 * @param uid
+	 * @param newName
+	 * @param callbackHander
+	 */
+	@action
+	onSetUpdateColunmName(uid: string, newName: string, warning: boolean = false) {
+		this.columns.forEach((column) => {
+			if (column.uid === uid) {
+				column.title = newName;
+				column.editing = true;
+				column.editWarning = warning;
+			} else {
+				column.editing = false;
+				column.editWarning = false;
+			}
+		});
+
+		this._onSetInputFocus('input-write-warn');
 	}
 
 	/**
@@ -162,7 +194,7 @@ export class PreviewTableStore {
 
 	@action
 	onShowColunmMenu(uid: string) {
-		this._handlerOnClickColumnMenu(uid);
+		this._onClickColumnMenu(uid);
 	}
 
 	@action
@@ -172,13 +204,26 @@ export class PreviewTableStore {
 		});
 	}
 
-	onSetSelected(selectdRowIndex: number, selectdColIndex: number) {
-		this.selectdColIndex = selectdColIndex;
+	onSetSelectedByIndex(selectdRowIndex: number, selectdColIndex: number) {
+		this.columns.forEach((column, ind) => {
+			if (ind === selectdColIndex - 1) {
+				this.selectdColIndexUId = column.uid;
+			}
+		});
+		this.selectdRowIndex = selectdRowIndex - 1;
+		// 清除
+		this._onChangeColumnEditing(this._editUId, false);
+	}
+
+	onSetSelected(selectdRowIndex: number, selectdColIndexUId: string) {
+		this.selectdColIndexUId = selectdColIndexUId;
 		this.selectdRowIndex = selectdRowIndex;
+		// 清除
+		this._onChangeColumnEditing(this._editUId, false);
 	}
 
 	onClearSelected() {
-		this.onSetSelected(-1, -1);
+		this.onSetSelected(-1, '');
 	}
 
 	@action
@@ -230,9 +275,8 @@ export class PreviewTableStore {
 
 	/**  挂载生命周期 后台事件  */
 
-	init(taskId: string, callbackHander: Function) {
+	init(taskId: string) {
 		this.taskId = taskId;
-		this._handlerOnClickColumnMenu = callbackHander;
 	}
 
 	didMountTable(tableRef: any) {
@@ -271,6 +315,19 @@ export class PreviewTableStore {
 		return null;
 	};
 
+	private _onSetInputFocus = (classname: string): void => {
+		setTimeout(() => {
+			const table = this.getTable();
+			if (table) {
+				const element = table.getElementsByClassName(classname)[0] as HTMLElement;
+				if (element) {
+					element.focus();
+					debugger;
+				}
+			}
+		}, 20);
+	};
+
 	getTableNoPlaceholder = (): HTMLElement | null => {
 		const table = this.getTable();
 		if (table) {
@@ -280,6 +337,60 @@ export class PreviewTableStore {
 			}
 		}
 		return null;
+	};
+
+	@action
+	_onResize = (index: string) => (e: any, { size }: any) => {
+		if (index === this._indexUId) {
+			return;
+		}
+
+		// const { columns } = this.props.store;
+		this.columns.some((x, ind) => {
+			if (index === x.uid) {
+				this._mapWidth.set(x.uid, size.width);
+				x.width = size.width;
+				return true;
+			}
+		});
+	};
+
+	/** 显示菜单 */
+	@action
+	_onClickColumnMenu = (uid: string) => {
+		this._editMore = false;
+		this.columns.forEach((x) => {
+			x.showmenu = x.uid === uid && !x.showmenu;
+		});
+		this.clickMenuColIndex = uid;
+	};
+
+	/**
+	 * 修改列头
+	 */
+	@action
+	_onChangeColumnTitle = (uid: string, val: string) => {
+		this.columns.forEach((x) => {
+			if (x.uid === uid) {
+				x.title = val;
+				x.editWarning = false;
+			}
+		});
+	};
+
+	/**
+	 * 修改列头
+	 */
+	@action
+	_onChangeColumnEditing = (uid: string, val: boolean) => {
+		this.columns.forEach((x) => {
+			if (x.uid === uid) {
+				x.editing = val;
+				x.editWarning = false;
+				this._editUId = val ? x.uid : '';
+			}
+		});
+		this._onSetInputFocus(`th-input-${uid}`);
 	};
 
 	private setSpinDom = () => {

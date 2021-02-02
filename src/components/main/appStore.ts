@@ -143,12 +143,18 @@ export class AppStore implements IPreviewTableHander {
 		switch (action) {
 			case 'init':
 				this.previewTableStore.onInit();
-				this.previewTableStore.onSetTableHeight(100);
-				this.previewTableStore.onAddColumn(this.columns);
-				setTimeout(() => {
-					this.previewTableStore.onInitData(this.getDataSource(10));
-				}, 1000);
-				// this.previewTableStore.onInitData(this.getDataSource(1));
+				// this.previewTableStore.onSetTableHeight(100);
+				// this.previewTableStore.onAddColumn(this.columns);
+				// setTimeout(() => {
+				// 	// this.previewTableStore.onInitData(this.getDataSource(10));
+				// 	this.previewTableStore.onInitData([]);
+				// }, 1000);
+				// this.previewTableStore.onInitData([
+				// 	{
+				// 		key: `row_11`,
+				// 		index: 1
+				// 	}
+				// ]);
 				break;
 			case 'initData':
 				this.previewTableStore.onInitData(this.getDataSource(10));
@@ -165,6 +171,9 @@ export class AppStore implements IPreviewTableHander {
 			case 'update_colunmName':
 				this.previewTableStore.onUpdateColunmName('sss1', '新的名字');
 				break;
+			case 'set_update_colunmName':
+				this.previewTableStore.onSetUpdateColunmName('sss1', '正在修改', true);
+				break;
 			case 'copy_colunm':
 				this.previewTableStore.onCopyColunm('sss3');
 				break;
@@ -178,13 +187,13 @@ export class AppStore implements IPreviewTableHander {
 				this.previewTableStore.onClearLoding();
 				break;
 			case 'sel_cell':
-				this.previewTableStore.onSetSelected(2, 4);
+				this.previewTableStore.onSetSelectedByIndex(2, 4);
 				break;
 			case 'sel_col':
-				this.previewTableStore.onSetSelected(-1, 3);
+				this.previewTableStore.onSetSelected(-1, 'sss3');
 				break;
 			case 'sel_row':
-				this.previewTableStore.onSetSelected(1, -1);
+				this.previewTableStore.onSetSelected(1, '');
 				break;
 			case 'sel_none':
 				this.previewTableStore.onClearSelected();

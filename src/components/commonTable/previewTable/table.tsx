@@ -28,13 +28,8 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 	constructor(props: PreviewTableProps) {
 		super(props);
 		this.tableRef = React.createRef();
-		this.props.store.init(this.props.taskId, this.handlerOnClickColumnMenu);
+		this.props.store.init(this.props.taskId);
 	}
-	state = { columns: [] };
-
-	_editIndex = -1;
-
-	_editMore = true;
 
 	componentDidMount() {
 		if (!this.tableRef.current) {
@@ -42,15 +37,11 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		}
 		this.props.store.didMountTable(this.tableRef);
 		document.addEventListener('click', (e) => {
-			if (this._editMore) {
+			if (this.props.store._editMore) {
 				this.props.store.onHideColunmMenu();
 			}
-			this._editMore = true;
+			this.props.store._editMore = true;
 		});
-
-		this.props.store._handlerOnClickColumnMenu = (uid: string) => {
-			this.handlerOnClickColumnMenu(uid);
-		};
 	}
 
 	components = {
@@ -60,85 +51,28 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		}
 	};
 
-	handleResize = (index: number) => (e: any, { size }: any) => {
-		if (index < 1) {
-			return;
-		}
-
-		const { columns } = this.props.store;
-		columns.some((x, ind) => {
-			if (index === ind) {
-				this.props.store._mapWidth.set(x.uid, size.width);
-				x.width = size.width;
-				return true;
-			}
-		});
-	};
-
-	/**
-	 * 修改列头
-	 */
-	handlerChangeColumnTitle = (index: number, val: string) => {
-		const nextColumns = [...this.props.store.columns];
-		nextColumns[index].title = val;
-		this.setState(nextColumns);
-	};
-
-	/**
-	 * 修改列头是否编辑
-	 */
-	handlerChangeColumnEdit = (index: number, val: boolean) => {
-		const nextColumns = [...this.props.store.columns];
-		nextColumns.forEach((x) => {
-			x.editing = false;
-		});
-		nextColumns[index].editing = val;
-		if (val) {
-			this._editIndex = index;
-		}
-		this.setState(nextColumns);
-	};
-
-	handlerClearColumnEdit = () => {
-		if (this._editIndex > -1) {
-			this.handlerChangeColumnEdit(this._editIndex, false);
-			this._editIndex = -1;
-		}
-	};
-
-	/**  */
-	handlerOnClickColumnMenu = (uid: string) => {
-		this._editMore = false;
-		const nextColumns = [...this.props.store.columns];
-		nextColumns.forEach((x) => {
-			x.showmenu = x.uid === uid && !x.showmenu;
-		});
-		this.props.store.clickMenuColIndex = uid;
-		this.setState(nextColumns);
-	};
-
 	handlerOnClickCell = (e: any, uid: string, rowIndex: number, colIndex: number) => {
 		this.props.store.previewTableHander.handlerClickCell(uid, rowIndex, colIndex);
-		this.handlerClearColumnEdit();
-		this.props.store.onSetSelected(rowIndex, colIndex);
+		this.props.store._onChangeColumnEditing(this.props.store._editUId, false);
+		this.props.store.onSetSelected(rowIndex, uid);
 		e.preventDefault();
 	};
 
 	handlerOnClickRow = (e: any, rowIndex: number) => {
 		this.props.store.previewTableHander.handlerClickRow(rowIndex);
-		this.handlerClearColumnEdit();
-		this.props.store.onSetSelected(rowIndex, -1);
+		this.props.store._onChangeColumnEditing(this.props.store._editUId, false);
+		this.props.store.onSetSelected(rowIndex, '');
 		e.preventDefault();
 	};
 
 	getRowClassName = (record: any, index: number): string => {
-		const { selectdRowIndex, selectdColIndex } = this.props.store;
-		const className = index === selectdRowIndex && selectdColIndex === -1 ? 'selected-row' : '';
+		const { selectdRowIndex, selectdColIndexUId } = this.props.store;
+		const className = index === selectdRowIndex && selectdColIndexUId === '' ? 'selected-row' : '';
 		return className;
 	};
 
 	render() {
-		const { loading, dataSource, columns, selectdRowIndex, selectdColIndex, tableHeight } = this.props.store;
+		const { loading, dataSource, columns, selectdRowIndex, selectdColIndexUId, tableHeight } = this.props.store;
 		this.props.store._colTotalWidth = 0;
 		const newColumns: any = columns.map((col, index) => {
 			this.props.store._colTotalWidth += col.width || 0;
@@ -146,35 +80,24 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 				...col,
 				...{
 					className: `${index < 1 ? 'react-resizable-index' : 'react-resizable-cell'} ${
-						index === selectdColIndex && selectdRowIndex === -1 ? 'selected-col' : ''
+						col.uid === selectdColIndexUId && selectdRowIndex === -1 ? 'selected-col' : ''
 					}`
 				},
 				render: (text: any, record: any, ind: number) => (
 					<div
 						onClick={(e) => this.handlerOnClickCell(e, columns[index].uid, ind, index)}
-						className={`${ind === selectdRowIndex && index === selectdColIndex ? 'selected-cell' : ''}`}
+						className={`${
+							ind === selectdRowIndex && col.uid === selectdColIndexUId ? 'selected-cell' : ''
+						}`}
 					>
 						<span>{text}</span>
 					</div>
 				),
 				onHeaderCell: (column: any) => ({
 					index,
+					column: { ...column, ...{ title: col.title } },
 					uid: col.uid,
-					title: col.title,
-					width: column.width,
-					editing: column.editing,
-					menu: column.editing,
-					showmenu: column.showmenu,
-					store: this.props.store,
-					selectdRowIndex,
-					selectdColIndex,
-					callback: {
-						handlerChangeColumnTitle: this.handlerChangeColumnTitle,
-						handlerChangeColumnEdit: this.handlerChangeColumnEdit,
-						handlerClearColumnEdit: this.handlerClearColumnEdit,
-						handlerOnClickColumnMenu: this.handlerOnClickColumnMenu
-					},
-					onResize: this.handleResize(index)
+					store: this.props.store
 				})
 			};
 		});
