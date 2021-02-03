@@ -3,6 +3,7 @@ import { IPreviewTableHander } from './tableInterface';
 import { observable, action } from 'mobx';
 
 export interface Column {
+	id?: number;
 	uid: string;
 	title: string;
 	dataIndex: string;
@@ -13,8 +14,7 @@ export interface Column {
 	belongTo?: string;
 	menuType?: string;
 	editWarning?: boolean;
-	menuRef?: any;
-	inputRef?: any;
+	highlight?: boolean;
 }
 
 export interface seletedDom {
@@ -37,12 +37,13 @@ export class PreviewTableStore {
 	}
 
 	@observable loading: boolean = false;
-	@observable dataSource = [];
+	@observable dataSource: { [key: string]: string | number }[] = [];
 
 	@observable tableHeight: number = 200;
 
 	/** 选中的行 */
 	@observable selectdRowIndex: number = -1;
+
 	/** 选中的列 */
 	@observable selectdColIndexUId: string = '';
 
@@ -50,13 +51,14 @@ export class PreviewTableStore {
 	@observable clickMenuColIndex: string = '';
 
 	readonly _indexUId: string = 'table-index';
+	readonly _indexWidth: number = 40;
 
 	/** 列总宽度 */
 	_colTotalWidth = 0;
 	/** 单列最小宽度 */
 	_colMinWidth = 100;
 	/** 缓存宽度 */
-	_mapWidth = new Map<string, number>().set('index', 40);
+	_mapWidth = new Map<string, number>().set('index', this._indexWidth);
 
 	/** 默认第一列 */
 	readonly _columnIndex: Column[] = [
@@ -70,6 +72,14 @@ export class PreviewTableStore {
 		}
 	];
 
+	/** 默认第一列 */
+	readonly _baseData: { [key: string]: string | number }[] = [
+		{
+			rowKey: 'table-row0-col0',
+			index: 0
+		}
+	];
+
 	/** 正在点击按钮 */
 	_editMore = true;
 	/**  */
@@ -80,6 +90,12 @@ export class PreviewTableStore {
 	@action
 	onInit() {
 		this.columns = this.columns.slice(0, 1);
+
+		// 第一列出现双边的bug
+		if (this.columns.length === 1) {
+			this.columns[0].fixed = '';
+		}
+		this.dataSource = this._baseData;
 	}
 
 	/**
@@ -103,8 +119,9 @@ export class PreviewTableStore {
 		} else {
 			console.error('列不能有相同的 dataIndex');
 		}
+
 		if (this.columns.length > 1) {
-			// delete this.columns[this.columns.length - 1].width;
+			// this.columns[0].fixed = 'left';
 		}
 		return res;
 	}
@@ -215,6 +232,20 @@ export class PreviewTableStore {
 		this._onChangeColumnEditing(this._editUId, false);
 	}
 
+	/** 设置选中的组（导出数据节点） */
+	@action
+	onSetSelectedByGroup(selectdGroup?: string) {
+		this.columns.forEach((column, ind) => {
+			if (selectdGroup) {
+				column.highlight = column.belongTo === selectdGroup;
+			} else {
+				column.highlight = false;
+			}
+		});
+		// 清除
+		// this._onChangeColumnEditing(this._editUId, false);
+	}
+
 	onSetSelected(selectdRowIndex: number, selectdColIndexUId: string) {
 		this.selectdColIndexUId = selectdColIndexUId;
 		this.selectdRowIndex = selectdRowIndex;
@@ -233,7 +264,7 @@ export class PreviewTableStore {
 	onInitColunms(column: Column[]) {
 		let res = true;
 		this.columns = this._columnIndex;
-		this._mapWidth = new Map<string, number>().set('index', 40);
+		this._mapWidth = new Map<string, number>().set('index', this._indexWidth);
 		res = this.onAddColumn(column);
 		return res;
 	}
@@ -246,9 +277,10 @@ export class PreviewTableStore {
 		return res;
 	}
 
+	/** 初始化数据 */
 	@action
-	onInitData(dataSource: any) {
-		this.dataSource = dataSource;
+	onInitData(dataSource: { [key: string]: string | number }[]) {
+		this.dataSource = [...this._baseData, ...dataSource];
 		if (this.clickMenuColIndex) {
 			this.onShowColunmMenu(this.clickMenuColIndex);
 		}
@@ -322,7 +354,6 @@ export class PreviewTableStore {
 				const element = table.getElementsByClassName(classname)[0] as HTMLElement;
 				if (element) {
 					element.focus();
-					debugger;
 				}
 			}
 		}, 20);

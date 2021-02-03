@@ -1,11 +1,12 @@
 .div-previewTable {
-	overflow: auto;
+	overflow: none;
 }
 
 /** 当前表格 **/
 .div-previewTable .ant-table-small {
 	border-radius: 0px;
 	height: 100%;
+	margin-right: -17px;
 }
 
 .div-previewTable .ant-table-small .ant-table-placeholder {
@@ -46,10 +47,14 @@
 .div-previewTable .ant-table-header {
 	background-color: #f0f3f8 !important;
 }
+
 .div-previewTable .ant-table-thead tr th {
 	padding: 2px 8px !important;
 }
 
+.div-previewTable .highlight-col {
+	border-top: 2px solid #025bde;
+}
 .div-previewTable .ant-table-thead .react-resizable-th {
 	position: relative;
 	height: 34px;
@@ -105,6 +110,10 @@
 }
 
 /** 表格行 ***/
+.div-previewTable .ant-table-tbody tr:first-child {
+	display: none !important;
+}
+
 .div-previewTable .ant-table-tbody tr td {
 	padding: 0 !important;
 }

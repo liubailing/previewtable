@@ -144,11 +144,11 @@ export class AppStore implements IPreviewTableHander {
 			case 'init':
 				this.previewTableStore.onInit();
 				// this.previewTableStore.onSetTableHeight(100);
-				// this.previewTableStore.onAddColumn(this.columns);
-				// setTimeout(() => {
-				// 	// this.previewTableStore.onInitData(this.getDataSource(10));
-				// 	this.previewTableStore.onInitData([]);
-				// }, 1000);
+				this.previewTableStore.onAddColumn(this.columns);
+				setTimeout(() => {
+					this.previewTableStore.onInitData(this.getDataSource(10));
+					// this.previewTableStore.onInitData([]);
+				}, 1000);
 				// this.previewTableStore.onInitData([
 				// 	{
 				// 		key: `row_11`,

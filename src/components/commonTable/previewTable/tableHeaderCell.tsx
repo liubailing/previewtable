@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import React, { useEffect } from 'react';
-import { Icon, Dropdown } from 'antd';
+import React from 'react';
+import { Icon, Dropdown, Input } from 'antd';
 import { Resizable } from 'react-resizable';
 import { PreviewTableStore, Column } from './tableStore';
 import lang from '../../../locales';
@@ -52,6 +52,12 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 		e.preventDefault();
 	};
 
+	const onPressEnter = (e: any) => {
+		store._onChangeColumnEditing(column.uid, false);
+		store.previewTableHander.handlerRename(column.uid, e.target.value);
+		e.preventDefault();
+	};
+
 	const onChangeInput = (e: any) => {
 		const currTitle = e.target.value;
 		setTimeout(() => {
@@ -79,7 +85,7 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 				>
 					<th
 						// {...restProps}
-						className={`${
+						className={`${column.highlight ? 'highlight-col' : ''} ${
 							column.uid === store.selectdColIndexUId && store.selectdRowIndex === -1
 								? 'selected-col'
 								: ''
@@ -92,10 +98,11 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 							title={column.title}
 						>
 							{column.editing ? (
-								<input
+								<Input
 									onChange={(e) => onChangeInput(e)}
 									onBlur={(e) => onBlurInput(e)}
 									onClick={(e) => e.stopPropagation()}
+									onPressEnter={(e) => onPressEnter(e)}
 									className={`th-input-write th-input-${column.uid} ${
 										column.editWarning ? 'input-write-warn' : ''
 									}`}
@@ -107,7 +114,7 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 								</div>
 							)}
 							{!column.editing ? (
-								<span className="resizable-th-action" ref={column.menuRef}>
+								<span className="resizable-th-action">
 									<div style={{ position: 'relative' }}>
 										<IconFont
 											onClick={(e: React.MouseEvent) => onClickEdit(e)}
@@ -137,7 +144,7 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 					</th>
 				</Resizable>
 			) : (
-				<th style={{ width: '40' }} className="th-index">
+				<th style={{ height: 38 }} className="th-index">
 					#
 				</th>
 			)}

@@ -52,14 +52,14 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 	};
 
 	handlerOnClickCell = (e: any, uid: string, rowIndex: number, colIndex: number) => {
-		this.props.store.previewTableHander.handlerClickCell(uid, rowIndex, colIndex);
+		this.props.store.previewTableHander.handlerClickCell(uid, rowIndex - 1, colIndex);
 		this.props.store._onChangeColumnEditing(this.props.store._editUId, false);
 		this.props.store.onSetSelected(rowIndex, uid);
 		e.preventDefault();
 	};
 
 	handlerOnClickRow = (e: any, rowIndex: number) => {
-		this.props.store.previewTableHander.handlerClickRow(rowIndex);
+		this.props.store.previewTableHander.handlerClickRow(rowIndex - 1);
 		this.props.store._onChangeColumnEditing(this.props.store._editUId, false);
 		this.props.store.onSetSelected(rowIndex, '');
 		e.preventDefault();
@@ -105,7 +105,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		if (newColumns.length) {
 			newColumns[0]['render'] = (text: any, record: any, index: number) => (
 				<div onClick={(e) => this.handlerOnClickRow(e, index)} className="row-index">
-					{index + 1}
+					{index}
 				</div>
 			);
 		}
@@ -126,6 +126,11 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 					dataSource={dataSource}
 					components={this.components}
 					rowClassName={this.getRowClassName}
+					onHeaderRow={(column) => {
+						return {
+							onClick: () => {} // 点击表头行
+						};
+					}}
 				>
 					{/* <TableColunm editing={true} props={{}}></TableColunm> */}
 				</Table>
