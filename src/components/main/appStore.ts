@@ -30,6 +30,7 @@ export class AppStore implements IPreviewTableHander {
 	 * @param newName
 	 */
 	handlerRename(uid: string, newName: string): void {
+		this.previewTableStore.onUpdateColunmName(uid, newName);
 		this.log(`>>>>>>>> handlerRename, ${uid},${newName}`);
 	}
 
@@ -74,7 +75,7 @@ export class AppStore implements IPreviewTableHander {
 		this.log(`>>>>>>>> handlerClickColunm,${uid},${colIndex}`);
 	}
 
-	handlerGetColumnMenu(uid: string, colIndex: number): any {}
+	handlerGetColumnMenu(uid: string, show_menu?: boolean): void {}
 
 	/********** 回调函数 bend **********/
 
@@ -145,10 +146,10 @@ export class AppStore implements IPreviewTableHander {
 				this.previewTableStore.onInit();
 				// this.previewTableStore.onSetTableHeight(100);
 				this.previewTableStore.onAddColumn(this.columns);
-				setTimeout(() => {
-					this.previewTableStore.onInitData(this.getDataSource(10));
-					// this.previewTableStore.onInitData([]);
-				}, 1000);
+				// setTimeout(() => {
+				// 	this.previewTableStore.onInitData(this.getDataSource(10));
+				// 	// this.previewTableStore.onInitData([]);
+				// }, 1000);
 				// this.previewTableStore.onInitData([
 				// 	{
 				// 		key: `row_11`,

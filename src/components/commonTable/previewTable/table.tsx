@@ -13,6 +13,7 @@ import TableHeaderRow from './tableHeaderRow';
 // import 'antd/lib/spin/style/index.css';
 // import 'antd/lib/dropdown/style/index.css';
 
+import './tableScroll.css';
 import './table.css';
 
 export interface PreviewTableProps {
@@ -22,20 +23,18 @@ export interface PreviewTableProps {
 
 @observer
 class PreviewTable extends React.Component<PreviewTableProps> {
-	// Maps to store key -> arr index for quick lookups
-	tableRef: React.RefObject<any>;
+	// Maps to store key -> arr index for quick lookup
 	// table: Table<any> | undefined;
 	constructor(props: PreviewTableProps) {
 		super(props);
-		this.tableRef = React.createRef();
 		this.props.store.init(this.props.taskId);
 	}
 
 	componentDidMount() {
-		if (!this.tableRef.current) {
+		if (!this.props.store.tableRef.current) {
 			return;
 		}
-		this.props.store.didMountTable(this.tableRef);
+		this.props.store.didMountTable();
 		document.addEventListener('click', (e) => {
 			if (this.props.store._editMore) {
 				this.props.store.onHideColunmMenu();
@@ -72,7 +71,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 	};
 
 	render() {
-		const { loading, dataSource, columns, selectdRowIndex, selectdColIndexUId, tableHeight } = this.props.store;
+		const { loading, dataSource, columns, selectdRowIndex, selectdColIndexUId } = this.props.store;
 		this.props.store._colTotalWidth = 0;
 		const newColumns: any = columns.map((col, index) => {
 			this.props.store._colTotalWidth += col.width || 0;
@@ -80,14 +79,16 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 				...col,
 				...{
 					className: `${index < 1 ? 'react-resizable-index' : 'react-resizable-cell'} ${
-						col.uid === selectdColIndexUId && selectdRowIndex === -1 ? 'selected-col' : ''
+						dataSource.length > 1 && col.uid === selectdColIndexUId && selectdRowIndex === -1
+							? 'selected-col'
+							: ''
 					}`
 				},
 				render: (text: any, record: any, ind: number) => (
 					<div
 						onClick={(e) => this.handlerOnClickCell(e, columns[index].uid, ind, index)}
 						className={`${
-							ind === selectdRowIndex && col.uid === selectdColIndexUId ? 'selected-cell' : ''
+							ind > 0 && ind === selectdRowIndex && col.uid === selectdColIndexUId ? 'selected-cell' : ''
 						}`}
 					>
 						<span>{text}</span>
@@ -103,38 +104,37 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		});
 
 		if (newColumns.length) {
-			newColumns[0]['render'] = (text: any, record: any, index: number) => (
-				<div onClick={(e) => this.handlerOnClickRow(e, index)} className="row-index">
-					{index}
-				</div>
-			);
+			newColumns[0]['render'] = (text: any, record: any, index: number) =>
+				index > 0 ? (
+					<div onClick={(e) => this.handlerOnClickRow(e, index)} className="row-index">
+						{index}
+					</div>
+				) : (
+					<div />
+				);
 		}
 
 		return (
 			<div className="div-previewTable">
 				<Table
-					// style={{ width: tableWidth, height: tableHeight }}
 					size="small"
-					className={`div-previewTable${this.props.taskId}`}
-					ref={this.tableRef}
+					className={`div-previewTable${this.props.taskId} ${
+						dataSource.length === 1 ? 'div-previewTable-nodata' : ''
+					}`}
+					ref={(ref) => (this.props.store.tableRef = ref)}
 					pagination={false}
 					scroll={{ x: 'max-content', y: 'max-content' }}
-					// scroll={{ x: columnWidth, y: tableHeight }}
-					// scroll={{ x: dataSource.length > 0 ? 'max-content' : columnWidth, y: tableHeight }}
 					bordered={true}
 					columns={newColumns}
 					dataSource={dataSource}
 					components={this.components}
 					rowClassName={this.getRowClassName}
-					onHeaderRow={(column) => {
-						return {
-							onClick: () => {} // 点击表头行
-						};
-					}}
-				>
-					{/* <TableColunm editing={true} props={{}}></TableColunm> */}
-				</Table>
-				<Spin spinning={loading} className={`div-previewTable-spin div-spin${this.props.taskId}`} />
+				/>
+				<Spin
+					ref={(ref) => (this.props.store.spinRef = ref)}
+					spinning={loading}
+					className={`div-previewTable-spin div-spin${this.props.taskId}`}
+				/>
 			</div>
 		);
 	}

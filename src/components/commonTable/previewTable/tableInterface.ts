@@ -40,5 +40,5 @@ export interface IPreviewTableHander {
 	 * 获取菜单
 	 * @param rowIndex
 	 */
-	handlerGetColumnMenu: (uid: string, colIndex: number) => any;
+	handlerGetColumnMenu: (uid: string, show?: boolean) => any;
 }

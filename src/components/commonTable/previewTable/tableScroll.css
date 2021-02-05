@@ -1,0 +1,107 @@
+.div-previewTable {
+	height: 100%;
+}
+
+.div-previewTable .ant-table-wrapper {
+	height: 100%;
+}
+
+.div-previewTable .ant-table-wrapper .ant-spin-nested-loading {
+	height: 100%;
+}
+
+.div-previewTable .ant-table-wrapper .ant-spin-nested-loading .ant-spin-container {
+	height: 100%;
+}
+
+.div-previewTable .ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table-fixed-header {
+	height: 100%;
+}
+
+.div-previewTable
+	.ant-table-wrapper
+	.ant-spin-nested-loading
+	.ant-spin-container
+	.ant-table-fixed-header
+	.ant-table-content {
+	height: 100%;
+}
+
+.div-previewTable
+	.ant-table-wrapper
+	.ant-spin-nested-loading
+	.ant-spin-container
+	.ant-table-fixed-header
+	.ant-table-content
+	.ant-table-scroll {
+	height: 100%;
+}
+
+.div-previewTable
+	.ant-table-wrapper
+	.ant-spin-nested-loading
+	.ant-spin-container
+	.ant-table-fixed-header
+	.ant-table-content
+	.ant-table-scroll
+	.ant-table-header {
+	/* flex: 1; */
+	/* overflow: auto !important; */
+	padding-bottom: 1px;
+	margin-bottom: -17px;
+	max-height: unset !important;
+}
+
+.div-previewTable
+	.ant-table-wrapper
+	.ant-spin-nested-loading
+	.ant-spin-container
+	.ant-table-fixed-header
+	.ant-table-header::-webkit-scrollbar,
+.div-previewTable
+	.ant-table-wrapper
+	.ant-spin-nested-loading
+	.ant-spin-container
+	.ant-table-fixed-header
+	.ant-table-header::-webkit-scrollbar-thumb,
+.div-previewTable
+	.ant-table-wrapper
+	.ant-spin-nested-loading
+	.ant-spin-container
+	.ant-table-fixed-header
+	.ant-table-header::-webkit-scrollbar-track {
+	opacity: 0;
+}
+
+.div-previewTable .ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table-small {
+	height: 100%;
+}
+
+.div-previewTable .ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table-small .ant-table-content {
+	height: 100%;
+}
+
+.div-previewTable
+	.ant-table-wrapper
+	.ant-spin-nested-loading
+	.ant-spin-container
+	.ant-table-small
+	.ant-table-content
+	.ant-table-scroll {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.div-previewTable
+	.ant-table-wrapper
+	.ant-spin-nested-loading
+	.ant-spin-container
+	.ant-table-small
+	.ant-table-content
+	.ant-table-scroll
+	.ant-table-body {
+	flex: 1;
+	overflow-x: auto !important;
+	max-height: unset !important;
+}

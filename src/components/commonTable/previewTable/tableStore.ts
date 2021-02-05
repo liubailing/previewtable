@@ -1,6 +1,7 @@
 /* eslint-disable array-callback-return */
-import { IPreviewTableHander } from './tableInterface';
 import { observable, action } from 'mobx';
+import { IPreviewTableHander } from './tableInterface';
+import ReactDOM from 'react-dom';
 
 export interface Column {
 	id?: number;
@@ -26,20 +27,20 @@ export class PreviewTableStore {
 	/** 调用 对外的暴露的接口方法 */
 	previewTableHander: IPreviewTableHander;
 	tableRef: any;
-	currSpinDom: HTMLElement | null;
-	spinDom: HTMLElement | null;
+	// currSpinDom: HTMLElement | null;
+	spinRef: any;
 	taskId: string;
 	constructor(handles: IPreviewTableHander) {
 		this.previewTableHander = handles;
-		this.spinDom = null;
-		this.currSpinDom = null;
+		this.spinRef = null;
+		// this.currSpinDom = null;
 		this.taskId = '';
 	}
 
 	@observable loading: boolean = false;
 	@observable dataSource: { [key: string]: string | number }[] = [];
 
-	@observable tableHeight: number = 200;
+	// @observable tableHeight: number = 200;
 
 	/** 选中的行 */
 	@observable selectdRowIndex: number = -1;
@@ -75,8 +76,8 @@ export class PreviewTableStore {
 	/** 默认第一列 */
 	readonly _baseData: { [key: string]: string | number }[] = [
 		{
-			rowKey: 'table-row0-col0',
-			index: 0
+			key: 'table-row-index',
+			dataIndex: 'index'
 		}
 	];
 
@@ -289,7 +290,7 @@ export class PreviewTableStore {
 	@action
 	onSetTableHeight(height: number = 0) {
 		if (height > 50) {
-			this.tableHeight = height;
+			// this.tableHseight = height;
 		}
 	}
 
@@ -311,16 +312,13 @@ export class PreviewTableStore {
 		this.taskId = taskId;
 	}
 
-	didMountTable(tableRef: any) {
-		this.tableRef = tableRef;
-		this.spinDom = this.getSpin();
-	}
+	didMountTable() {}
 
 	/**  后台事件  */
-	private getTable = (): HTMLElement | null => {
+	getTable = (): HTMLElement | null => {
 		if (this.tableRef) {
-			const element = document.getElementsByClassName(this.tableRef.current.props.className)[0] as HTMLElement;
-
+			// const element = document.getElementsByClassName(this.tableRef.current.props.className)[0] as HTMLElement;
+			const element = ReactDOM.findDOMNode(this.tableRef) as HTMLElement;
 			if (element) {
 				return element;
 			}
@@ -329,14 +327,14 @@ export class PreviewTableStore {
 	};
 
 	private getSpin = (): HTMLElement | null => {
-		const element = document.getElementsByClassName(`div-spin${this.taskId}`)[0] as HTMLElement;
+		const element = ReactDOM.findDOMNode(this.spinRef) as HTMLElement;
 		if (element) {
 			return element;
 		}
 		return null;
 	};
 
-	private getTableBody = (): HTMLElement | null => {
+	getTableBody = (): HTMLElement | null => {
 		const table = this.getTable();
 		if (table) {
 			const element = table.getElementsByClassName('ant-table-tbody')[0] as HTMLElement;
@@ -350,8 +348,10 @@ export class PreviewTableStore {
 	private _onSetInputFocus = (classname: string): void => {
 		setTimeout(() => {
 			const table = this.getTable();
+			debugger;
 			if (table) {
-				const element = table.getElementsByClassName(classname)[0] as HTMLElement;
+				const element = table.getElementsByClassName(classname)[0] as HTMLInputElement;
+				debugger;
 				if (element) {
 					element.focus();
 				}
@@ -434,42 +434,22 @@ export class PreviewTableStore {
 
 	private setSpin = (dom: HTMLElement) => {
 		const bounding = dom.getBoundingClientRect();
-		if (this.spinDom && bounding) {
-			const table = this.getTable();
-			let maxWidth = bounding.width;
-			if (table) {
-				if (maxWidth > table.getBoundingClientRect().width) {
-					maxWidth = table.getBoundingClientRect().width;
-				}
-			}
-			this.spinDom.style.display = 'block';
-			this.spinDom.style.height = `${this.tableHeight}px`;
-			this.spinDom.style.width = `${maxWidth}px`;
-			this.spinDom.style.top = `${bounding.y}px`;
-			this.spinDom.style.left = `${bounding.x}px`;
-			this.currSpinDom = dom;
-		}
-	};
-
-	private resetSpin = () => {
-		if (this.currSpinDom) {
-			const bounding = this.currSpinDom.getBoundingClientRect();
-			if (this.spinDom && bounding) {
-				this.spinDom.style.display = 'block';
-				this.spinDom.style.height = `${this.tableHeight}px`;
-				this.spinDom.style.width = `${bounding.width - 10}px`;
-				this.spinDom.style.top = `${bounding.y}px`;
-				this.spinDom.style.left = `${bounding.x}px`;
-			}
+		const spinDom = this.getSpin();
+		if (spinDom && bounding) {
+			spinDom.style.display = 'block';
+			spinDom.style.top = `42px`;
+			spinDom.style.left = `0px`;
+			spinDom.style.bottom = `0px`;
+			spinDom.style.right = `0px`;
 		}
 	};
 
 	private clearSpin = () => {
-		if (this.spinDom) {
-			this.spinDom.style.display = 'none';
-			this.currSpinDom = null;
-			this.spinDom.style.height = `0px`;
-			this.spinDom.style.width = `0px`;
+		const spinDom = this.getSpin();
+		if (spinDom) {
+			spinDom.style.display = 'none';
+			spinDom.style.height = `0px`;
+			spinDom.style.width = `0px`;
 		}
 	};
 

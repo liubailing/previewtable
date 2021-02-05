@@ -5,6 +5,7 @@ import { Resizable } from 'react-resizable';
 import { PreviewTableStore, Column } from './tableStore';
 import lang from '../../../locales';
 import IconFont from '../../IconFont/IconFont';
+import ReactDOM from 'react-dom';
 
 export interface PreviewTableCEllProps {
 	index: number;
@@ -18,12 +19,14 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 		return <th />;
 	}
 
-	// const inputRef: any = React.createRef();
-
-	// useEffect(() => {
-	// 	store._onSetRef(inputRef);
-	// 	// 请求或者弹窗的处理
-	// }, []);
+	let innerRef: any;
+	const saveFiled = (name: string) => {
+		if (!name) {
+			name = column.title;
+		}
+		store._onChangeColumnEditing(column.uid, false);
+		store.previewTableHander.handlerRename(column.uid, name);
+	};
 
 	const onContextMenu = (e: any) => {
 		store.onSetSelected(-1, column.uid);
@@ -42,33 +45,42 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 	const onClickEdit = (e: any) => {
 		store.onSetSelected(-1, column.uid);
 		store._onChangeColumnEditing(column.uid, true);
+		// setTimeout(() => {
+		// 	if (innerRef) {
+		// 		const input = ReactDOM.findDOMNode(innerRef) as HTMLElement;
+		// 		// input.setAttribute('value', '1111');
+		// 		input.focus();
+		// 		console.log(`>>>innerRef`, input);
+		// 	}
+		// }, 16);
+
 		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	const onBlurInput = (e: any) => {
-		store._onChangeColumnEditing(column.uid, false);
-		store.previewTableHander.handlerRename(column.uid, e.target.value);
+		saveFiled(e.target.value);
 		e.preventDefault();
 	};
 
 	const onPressEnter = (e: any) => {
-		store._onChangeColumnEditing(column.uid, false);
-		store.previewTableHander.handlerRename(column.uid, e.target.value);
-		e.preventDefault();
-	};
-
-	const onChangeInput = (e: any) => {
-		const currTitle = e.target.value;
-		setTimeout(() => {
-			store._onChangeColumnTitle(column.uid, currTitle);
-		}, 16);
+		saveFiled(e.target.value);
 		e.preventDefault();
 	};
 
 	const onClickColumn = (e: any) => {
 		store.previewTableHander.handlerClickColumn(column.uid, index);
 		store.onSetSelected(-1, column.uid);
+		e.preventDefault();
+	};
+	const onFocus = (e: any) => {
+		if (innerRef) {
+			const input = ReactDOM.findDOMNode(innerRef) as HTMLInputElement;
+			input.setAttribute('value', column.title);
+			setTimeout(() => {
+				input.setSelectionRange(0, 100);
+			}, 19);
+		}
 		e.preventDefault();
 	};
 
@@ -99,14 +111,15 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 						>
 							{column.editing ? (
 								<Input
-									onChange={(e) => onChangeInput(e)}
+									ref={(ref) => (innerRef = ref)}
+									placeholder={column.title}
+									onFocus={(e) => onFocus(e)}
 									onBlur={(e) => onBlurInput(e)}
 									onClick={(e) => e.stopPropagation()}
 									onPressEnter={(e) => onPressEnter(e)}
 									className={`th-input-write th-input-${column.uid} ${
 										column.editWarning ? 'input-write-warn' : ''
 									}`}
-									value={column.title}
 								/>
 							) : (
 								<div className="th-input-read">
@@ -122,13 +135,14 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 											type="icon-icon-checkin"
 										/>
 										<Dropdown
-											getPopupContainer={() => {
-												return store.getTableNoPlaceholder() || document.body;
-											}}
+											getPopupContainer={() => store.getTable() || document.body}
 											placement="bottomRight"
 											// trigger={['click']}
 											visible={column.showmenu}
-											overlay={store.previewTableHander.handlerGetColumnMenu(column.uid, index)}
+											overlay={store.previewTableHander.handlerGetColumnMenu(
+												column.uid,
+												column.showmenu
+											)}
 											// onVisibleChange={getColunmMenu1}
 										>
 											<Icon

@@ -14,8 +14,9 @@ import ReactDOM from 'react-dom';
 
 interface PreviewTableMenuProps {
 	uid: string;
-	colIndex: number;
+	colIndex?: number;
 	store: AppStore;
+	showmenu?: boolean;
 }
 
 @observer

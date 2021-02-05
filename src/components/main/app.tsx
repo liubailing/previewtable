@@ -35,8 +35,8 @@ class MainTest extends React.Component<MainProps> {
 		this.appStore.handlerGetColumnMenu = this.getMenu;
 	}
 
-	getMenu = (uid: string, colIndex: number): JSX.Element => {
-		return <PreviewTableMenu store={this.appStore} uid={uid} colIndex={colIndex} />;
+	getMenu = (uid: string, showmenu?: boolean): JSX.Element => {
+		return <PreviewTableMenu store={this.appStore} uid={uid} showmenu={showmenu} />;
 	};
 
 	render() {

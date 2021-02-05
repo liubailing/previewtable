@@ -1,12 +1,12 @@
 .div-previewTable {
-	overflow: none;
+	overflow: auto;
+	position: relative;
 }
 
 /** 当前表格 **/
 .div-previewTable .ant-table-small {
 	border-radius: 0px;
 	height: 100%;
-	margin-right: -17px;
 }
 
 .div-previewTable .ant-table-small .ant-table-placeholder {
@@ -44,12 +44,14 @@
 	text-align: center;
 	background-color: #f0f3f8 !important;
 }
-.div-previewTable .ant-table-header {
+.div-previewTable .ant-table-content .ant-table-header {
 	background-color: #f0f3f8 !important;
+	/* margin-right: -17px; */
+	/* overflow-y: hidden !important; */
 }
 
 .div-previewTable .ant-table-thead tr th {
-	padding: 2px 8px !important;
+	padding: 1px 8px !important;
 }
 
 .div-previewTable .highlight-col {
@@ -57,7 +59,7 @@
 }
 .div-previewTable .ant-table-thead .react-resizable-th {
 	position: relative;
-	height: 34px;
+	height: 32px;
 	padding: 0;
 	display: flex;
 }
@@ -74,7 +76,7 @@
 	text-indent: 3px;
 	width: 100%;
 	left: 0;
-	top: 8px;
+	top: 6px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -97,7 +99,7 @@
 .div-previewTable .react-resizable-th span.resizable-th-action {
 	position: absolute;
 	right: 5px;
-	top: 8px;
+	top: 4px;
 	display: none;
 	cursor: pointer;
 }
@@ -113,6 +115,40 @@
 .div-previewTable .ant-table-tbody tr:first-child {
 	display: none !important;
 }
+/** 表格行  只有一行数据***/
+
+.div-previewTable .div-previewTable-nodata .ant-table-fixed {
+	height: 100%;
+}
+.div-previewTable .div-previewTable-nodata .ant-table-tbody {
+	overflow-y: scroll !important;
+	height: 100%;
+}
+.div-previewTable .div-previewTable-nodata .ant-table-tbody tr:first-child {
+	height: 100%;
+	display: table-row !important;
+	/* background-color: aqua; */
+}
+.div-previewTable .div-previewTable-nodata .ant-table-tbody tr:first-child:active,
+.div-previewTable .div-previewTable-nodata .ant-table-tbody tr:first-child:hover {
+	background-color: #fff !important;
+}
+
+.div-previewTable .div-previewTable-nodata .ant-table-tbody tr:first-child td div {
+	background-color: transparent !important;
+}
+
+.div-previewTable .div-previewTable-nodata .ant-table-tbody tr:first-child td {
+	border: 0;
+}
+
+.div-previewTable .div-previewTable-nodata .ant-table-tbody tr:last-child {
+	border: 0;
+}
+
+.div-previewTable .ant-table-tbody tr:last-child {
+	border: 1px solid #e8e8e8;
+}
 
 .div-previewTable .ant-table-tbody tr td {
 	padding: 0 !important;
@@ -125,7 +161,7 @@
 
 .div-previewTable .ant-table-tbody tr td > div {
 	position: relative;
-	height: 36px;
+	height: 31px;
 	padding: 0 5px !important;
 }
 .div-previewTable .ant-table-tbody tr td > div > span {
@@ -144,8 +180,8 @@
 	background-color: #f0f3f8;
 	display: block;
 	text-align: center;
-	height: 38px;
-	line-height: 38px;
+	height: 33px;
+	line-height: 33px;
 	cursor: pointer;
 }
 
@@ -197,4 +233,10 @@
 .ant-menu-submenu.preview-menu .ant-menu .ant-menu-submenu:hover {
 	background-color: #e6f4ff !important;
 	color: rgba(0, 0, 0, 0.65);
+}
+
+.ant-dropdown .ant-menu.preview-menu .ant-menu-item.ant-menu-item-selected,
+.ant-menu-submenu.preview-menu .ant-menu .ant-menu-item.ant-menu-item-selected {
+	background-color: #fff !important;
+	color: rgba(34, 34, 34);
 }
