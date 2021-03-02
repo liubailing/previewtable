@@ -59,7 +59,6 @@
 
 .div-previewTable .ant-table-thead tr th.highlight-col {
 	border-top: 2px solid #025bde;
-
 }
 .div-previewTable .ant-table-thead .react-resizable-th {
 	position: relative;
@@ -70,18 +69,18 @@
 }
 
 .div-previewTable .react-resizable-th .th-input-read {
-	position: relative;
+	/* position: relative; */
 	background-color: #f0f3f8;
 	width: 100% !important;
 	text-align: left;
+	margin-left: 0px;
 	transition: none !important;
 }
-.div-previewTable .react-resizable-th .th-input-read > span {
+.div-previewTable .react-resizable-th .th-input-read .field-name {
 	display: inline-block;
 	position: absolute;
-	text-indent: 3px;
-	width: 100%;
-	left: 0;
+	width: calc(100% - 20px);
+	left: 18px;
 	top: 6px;
 	overflow: hidden;
 	white-space: nowrap;
@@ -89,7 +88,7 @@
 	transition: none !important;
 }
 
-.div-previewTable .react-resizable-th:hover .th-input-read {
+.div-previewTable .react-resizable-th:hover .th-input-read .field-name {
 	width: calc(100% - 40px) !important;
 }
 
@@ -103,6 +102,7 @@
 }
 
 /** 表头操作 **/
+
 .div-previewTable .react-resizable-th span.resizable-th-action {
 	position: absolute;
 	right: 5px;
@@ -110,7 +110,19 @@
 	display: none;
 	cursor: pointer;
 }
+.div-previewTable .react-resizable-th .th-action-drag {
+	/* width: 10px; */
+}
+.div-previewTable .react-resizable-th .action-drag-icon {
+	display: none;
+	cursor: pointer;
+}
+
 .div-previewTable .react-resizable-th:hover span.resizable-th-action {
+	display: block;
+}
+
+.div-previewTable .react-resizable-th:hover .action-drag-icon {
 	display: block;
 }
 

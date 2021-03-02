@@ -16,7 +16,8 @@ import {
 } from 'react-beautiful-dnd';
 
 const EditableContext = React.createContext({
-	snapshot: {}
+	snapshot: {},
+	dragToUid: ''
 });
 
 export interface PreviewTableCEllProps {
@@ -134,14 +135,10 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 									}`}
 								/>
 							) : (
-								<Droppable droppableId="123" direction="horizontal" type={column.uid}>
+								<Droppable droppableId="droppable" direction="horizontal" type={column.uid}>
 									{(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
-										<EditableContext.Provider value={{ snapshot }}>
-											<div
-												{...provided.droppableProps}
-												ref={provided.innerRef}
-												style={{ width: '100%' }}
-											>
+										<EditableContext.Provider value={{ dragToUid: column.uid, snapshot }}>
+											<div {...provided.droppableProps} ref={provided.innerRef}>
 												<Draggable key={index} draggableId={String(index)} index={index}>
 													{(
 														provided: DraggableProvided,
@@ -151,7 +148,6 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 															ref={provided.innerRef}
 															{...provided.draggableProps}
 															{...provided.dragHandleProps}
-															// style={{ height: '100%' }}
 															// onDragStart={(e) => {
 															// 	console.log('onDragStart', column.title);
 															// }}
@@ -159,7 +155,7 @@ const ResizeableTitle: React.FC<any> = (props: PreviewTableCEllProps) => {
 															// 	console.log('onTransitionEnd', column.title);
 															// }}
 														>
-															<div className="th-input-read" style={{ height: '32px' }}>
+															<div className="th-input-read">
 																<div className="action-drag-icon">
 																	<IconFont
 																		type="icon-yidong"
