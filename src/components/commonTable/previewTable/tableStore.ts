@@ -1,3 +1,4 @@
+/* eslint-disable react/no-find-dom-node */
 /* eslint-disable array-callback-return */
 import { observable, action } from 'mobx';
 import { IPreviewTableHander } from './tableInterface';
@@ -29,11 +30,12 @@ export class PreviewTableStore {
 	tableRef: any;
 	// currSpinDom: HTMLElement | null;
 	spinRef: any;
+	tableScoll: Element | null;
 	taskId: string;
 	constructor(handles: IPreviewTableHander) {
 		this.previewTableHander = handles;
 		this.spinRef = null;
-		// this.currSpinDom = null;
+		this.tableScoll = null;
 		this.taskId = '';
 	}
 
@@ -81,8 +83,9 @@ export class PreviewTableStore {
 		}
 	];
 
-	/** 正在点击按钮 */
-	_editMore = true;
+	/** 字段操作菜单已经被隐藏 */
+	_feildMenuIsOpened = false;
+
 	/**  */
 	_editUId = '';
 
@@ -115,6 +118,9 @@ export class PreviewTableStore {
 
 		if (res) {
 			this.columns = this.columns.concat(column);
+			this.columns.forEach((x) => {
+				x.showmenu = false;
+			});
 			// 回调函数
 			this.previewTableHander.handlerAddColumn(column);
 		} else {
@@ -128,18 +134,18 @@ export class PreviewTableStore {
 	}
 
 	/**
-	 * 修改样式名
+	 * 修改字段名
 	 * @param uid
 	 * @param newName
 	 * @param callbackHander
 	 */
 	@action
-	onUpdateColunmName(uid: string, newName: string, callbackHander: boolean = false) {
+	onUpdateColunmName(belongTo: string, uid: string, newName: string, callbackHander: boolean = false) {
 		this.columns.forEach((column) => {
 			if (column.uid === uid) {
 				column.title = newName;
 				if (callbackHander) {
-					this.previewTableHander.handlerRename(uid, newName);
+					this.previewTableHander.handlerRename(belongTo, uid, newName);
 				}
 			}
 		});
@@ -220,6 +226,7 @@ export class PreviewTableStore {
 		this.columns.forEach((column, ind) => {
 			column.showmenu = false;
 		});
+		this._feildMenuIsOpened = false;
 	}
 
 	onSetSelectedByIndex(selectdRowIndex: number, selectdColIndex: number) {
@@ -278,13 +285,51 @@ export class PreviewTableStore {
 		return res;
 	}
 
+	/**
+	 * 滚动到某列
+	 * @param uid
+	 */
+	scollTo(uid: string) {
+		if (this.tableScoll) {
+			let left = 0;
+			for (const it of this.columns) {
+				if (it.uid == uid) {
+					break;
+				}
+				left += it.width || 40;
+			}
+
+			this.tableScoll.scrollLeft = left - 40;
+			this.onSetSelected(-1, uid);
+		}
+	}
+
+	/**
+	 * 滚动到某组
+	 * @param uid
+	 */
+	scollToGroup(belongTo: string) {
+		if (this.tableScoll) {
+			let left = 0;
+			for (const it of this.columns) {
+				if (it.belongTo == belongTo) {
+					break;
+				}
+				left += it.width || 40;
+			}
+
+			this.tableScoll.scrollLeft = left - 40;
+			this.onSetSelectedByGroup(belongTo);
+		}
+	}
+
 	/** 初始化数据 */
 	@action
 	onInitData(dataSource: { [key: string]: string | number }[]) {
 		this.dataSource = [...this._baseData, ...dataSource];
-		if (this.clickMenuColIndex) {
-			this.onShowColunmMenu(this.clickMenuColIndex);
-		}
+		// if (this.clickMenuColIndex && !this._feildMenuIsOpened) {
+		// 	this.onShowColunmMenu(this.clickMenuColIndex);
+		// }
 	}
 
 	@action
@@ -312,8 +357,6 @@ export class PreviewTableStore {
 		this.taskId = taskId;
 	}
 
-	didMountTable() {}
-
 	/**  后台事件  */
 	getTable = (): HTMLElement | null => {
 		if (this.tableRef) {
@@ -334,24 +377,22 @@ export class PreviewTableStore {
 		return null;
 	};
 
-	getTableBody = (): HTMLElement | null => {
-		const table = this.getTable();
-		if (table) {
-			const element = table.getElementsByClassName('ant-table-tbody')[0] as HTMLElement;
-			if (element) {
-				return element;
-			}
-		}
-		return null;
-	};
+	// getTableBody = (): HTMLElement | null => {
+	// 	const table = this.getTable();
+	// 	if (table) {
+	// 		const element = table.getElementsByClassName('ant-table-tbody')[0] as HTMLElement;
+	// 		if (element) {
+	// 			return element;
+	// 		}
+	// 	}
+	// 	return null;
+	// };
 
 	private _onSetInputFocus = (classname: string): void => {
 		setTimeout(() => {
 			const table = this.getTable();
-			debugger;
 			if (table) {
 				const element = table.getElementsByClassName(classname)[0] as HTMLInputElement;
-				debugger;
 				if (element) {
 					element.focus();
 				}
@@ -389,7 +430,7 @@ export class PreviewTableStore {
 	/** 显示菜单 */
 	@action
 	_onClickColumnMenu = (uid: string) => {
-		this._editMore = false;
+		this._feildMenuIsOpened = true;
 		this.columns.forEach((x) => {
 			x.showmenu = x.uid === uid && !x.showmenu;
 		});
@@ -425,17 +466,9 @@ export class PreviewTableStore {
 	};
 
 	private setSpinDom = () => {
-		const tableBody = this.getTableBody();
-
-		if (tableBody) {
-			this.setSpin(tableBody);
-		}
-	};
-
-	private setSpin = (dom: HTMLElement) => {
-		const bounding = dom.getBoundingClientRect();
+		// const bounding = dom.getBoundingClientRect();
 		const spinDom = this.getSpin();
-		if (spinDom && bounding) {
+		if (spinDom) {
 			spinDom.style.display = 'block';
 			spinDom.style.top = `42px`;
 			spinDom.style.left = `0px`;
@@ -448,10 +481,18 @@ export class PreviewTableStore {
 		const spinDom = this.getSpin();
 		if (spinDom) {
 			spinDom.style.display = 'none';
-			spinDom.style.height = `0px`;
-			spinDom.style.width = `0px`;
 		}
 	};
+
+	// 判断系统类型
+	isMac(): boolean {
+		const isMac = /macintosh|mac os x/i.test(navigator.userAgent);
+		if (isMac) {
+			// your code
+			return true;
+		}
+		return false;
+	}
 
 	private getRandomKey = (): string =>
 		Math.random()

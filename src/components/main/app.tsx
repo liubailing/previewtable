@@ -161,6 +161,15 @@ class MainTest extends React.Component<MainProps> {
 								显示惨淡
 							</button>
 						</div>
+						<div>
+							<button
+								onClick={() => {
+									this.appStore.test('scroll');
+								}}
+							>
+								scroll to sss21
+							</button>
+						</div>
 					</div>
 					<div className="divActionItem">
 						<div>

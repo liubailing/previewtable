@@ -5,7 +5,7 @@ export interface IPreviewTableHander {
 	 * @param index
 	 * @param newName
 	 */
-	handlerRename: (uid: string, newName: string) => void;
+	handlerRename: (belongTo: string | undefined, uid: string, newName: string) => void;
 	/**
 	 * 删除列
 	 * @param index

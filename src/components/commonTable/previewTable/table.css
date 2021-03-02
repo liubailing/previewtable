@@ -11,7 +11,6 @@
 
 .div-previewTable .ant-table-small .ant-table-placeholder {
 	display: none;
-	/* visibility: hidden; */
 	padding: 0;
 	border: none;
 }
@@ -46,22 +45,28 @@
 }
 .div-previewTable .ant-table-content .ant-table-header {
 	background-color: #f0f3f8 !important;
-	/* margin-right: -17px; */
-	/* overflow-y: hidden !important; */
+}
+
+.div-previewTable.div-inmac .ant-table-content .ant-table-header {
+	overflow-y: hidden !important;
 }
 
 .div-previewTable .ant-table-thead tr th {
 	padding: 1px 8px !important;
+	border-top: 2px solid transparent;
+	transition: none !important;
 }
 
-.div-previewTable .highlight-col {
+.div-previewTable .ant-table-thead tr th.highlight-col {
 	border-top: 2px solid #025bde;
+
 }
 .div-previewTable .ant-table-thead .react-resizable-th {
 	position: relative;
 	height: 32px;
 	padding: 0;
 	display: flex;
+	transition: none !important;
 }
 
 .div-previewTable .react-resizable-th .th-input-read {
@@ -69,6 +74,7 @@
 	background-color: #f0f3f8;
 	width: 100% !important;
 	text-align: left;
+	transition: none !important;
 }
 .div-previewTable .react-resizable-th .th-input-read > span {
 	display: inline-block;
@@ -80,6 +86,7 @@
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	transition: none !important;
 }
 
 .div-previewTable .react-resizable-th:hover .th-input-read {
@@ -130,8 +137,8 @@
 	/* background-color: aqua; */
 }
 .div-previewTable .div-previewTable-nodata .ant-table-tbody tr:first-child:active,
-.div-previewTable .div-previewTable-nodata .ant-table-tbody tr:first-child:hover {
-	background-color: #fff !important;
+.div-previewTable .div-previewTable-nodata .ant-table-tbody tr:first-child:hover td {
+	background-color: transparent !important;
 }
 
 .div-previewTable .div-previewTable-nodata .ant-table-tbody tr:first-child td div {
@@ -208,6 +215,13 @@
 }
 
 /**  下拉菜单*/
+.ant-dropdown {
+	animation: none !important;
+}
+
+.ant-dropdown-menu {
+	animation: none !important;
+}
 
 .ant-dropdown .ant-menu.preview-menu {
 	position: absolute;
@@ -220,8 +234,8 @@
 }
 .ant-dropdown .ant-menu.preview-menu .ant-menu-item,
 .ant-dropdown .ant-menu.preview-menu .ant-menu-submenu div,
-.ant-menu-submenu.preview-menu .ant-menu .ant-menu-item,
-.ant-menu-submenu.preview-menu .ant-menu .ant-menu-submenu div {
+.ant-menu-submenu .ant-menu .ant-menu-item.preview-menu,
+.ant-menu-submenu .ant-menu .ant-menu-submenu.preview-menu div {
 	margin: 0 !important;
 	height: 32px;
 	line-height: 32px;
@@ -229,13 +243,14 @@
 
 .ant-dropdown .ant-menu.preview-menu .ant-menu-item:hover,
 .ant-dropdown .ant-menu.preview-menu .ant-menu-submenu:hover,
-.ant-menu-submenu.preview-menu .ant-menu .ant-menu-item:hover,
-.ant-menu-submenu.preview-menu .ant-menu .ant-menu-submenu:hover {
+.ant-menu-submenu .ant-menu .ant-menu-item.preview-menu:hover,
+.ant-menu-submenu .ant-menu .ant-menu-submenu:hover {
 	background-color: #e6f4ff !important;
 	color: rgba(0, 0, 0, 0.65);
 }
 
 .ant-dropdown .ant-menu.preview-menu .ant-menu-item.ant-menu-item-selected,
+.ant-dropdown .ant-menu.preview-menu .ant-menu-submenu.ant-menu-submenu-selected,
 .ant-menu-submenu.preview-menu .ant-menu .ant-menu-item.ant-menu-item-selected {
 	background-color: #fff !important;
 	color: rgba(34, 34, 34);

@@ -29,8 +29,8 @@ export class AppStore implements IPreviewTableHander {
 	 * @param index
 	 * @param newName
 	 */
-	handlerRename(uid: string, newName: string): void {
-		this.previewTableStore.onUpdateColunmName(uid, newName);
+	handlerRename(uid: string | undefined, newName: string): void {
+		this.previewTableStore.onUpdateColunmName('', uid || '', newName);
 		this.log(`>>>>>>>> handlerRename, ${uid},${newName}`);
 	}
 
@@ -102,7 +102,10 @@ export class AppStore implements IPreviewTableHander {
 			dataIndex: 'type',
 			width: 100,
 			editing: false
-		},
+		}
+	];
+
+	columns2 = [
 		{
 			uid: 'sss1',
 			title: 'Note',
@@ -126,13 +129,55 @@ export class AppStore implements IPreviewTableHander {
 		},
 		{
 			uid: 'sss21',
-			title: 'Type',
+			title: '这里',
 			dataIndex: 'type1',
 			width: 100,
 			editing: false
 		},
 		{
 			uid: 'sss11',
+			title: 'Note',
+			dataIndex: 'note1',
+			width: 100,
+			editing: false
+		},
+		{
+			uid: 'sss211',
+			title: 'Type',
+			dataIndex: 'type1',
+			width: 100,
+			editing: false
+		},
+		{
+			uid: 'sss111',
+			title: 'Note',
+			dataIndex: 'note1',
+			width: 100,
+			editing: false
+		},
+		{
+			uid: 'sss2111',
+			title: 'Type',
+			dataIndex: 'type1',
+			width: 100,
+			editing: false
+		},
+		{
+			uid: 'sss111111',
+			title: 'Note',
+			dataIndex: 'note1',
+			width: 100,
+			editing: false
+		},
+		{
+			uid: 'ss42111',
+			title: 'Type',
+			dataIndex: 'type1',
+			width: 100,
+			editing: false
+		},
+		{
+			uid: 'ss3111111',
 			title: 'Note',
 			dataIndex: 'note1',
 			width: 100,
@@ -146,10 +191,11 @@ export class AppStore implements IPreviewTableHander {
 				this.previewTableStore.onInit();
 				// this.previewTableStore.onSetTableHeight(100);
 				this.previewTableStore.onAddColumn(this.columns);
-				// setTimeout(() => {
-				// 	this.previewTableStore.onInitData(this.getDataSource(10));
-				// 	// this.previewTableStore.onInitData([]);
-				// }, 1000);
+
+				setTimeout(() => {
+					this.previewTableStore.onInitData(this.getDataSource(10));
+					// this.previewTableStore.onInitData([]);
+				}, 1000);
 				// this.previewTableStore.onInitData([
 				// 	{
 				// 		key: `row_11`,
@@ -167,10 +213,10 @@ export class AppStore implements IPreviewTableHander {
 				this.previewTableStore.onReRenderColunms(this.columns);
 				break;
 			case 'add_colunm':
-				this.previewTableStore.onAddColumn(this.columns);
+				this.previewTableStore.onAddColumn(this.columns2);
 				break;
 			case 'update_colunmName':
-				this.previewTableStore.onUpdateColunmName('sss1', '新的名字');
+				this.previewTableStore.onUpdateColunmName('', 'sss1', '新的名字');
 				break;
 			case 'set_update_colunmName':
 				this.previewTableStore.onSetUpdateColunmName('sss1', '正在修改', true);
@@ -198,8 +244,11 @@ export class AppStore implements IPreviewTableHander {
 				break;
 			case 'sel_none':
 				this.previewTableStore.onClearSelected();
-				break;
 
+				break;
+			case 'scroll':
+				this.previewTableStore.scollTo('sss21');
+				break;
 			case 'show_menu':
 				this.previewTableStore.onShowColunmMenu('sss1');
 				break;

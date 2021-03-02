@@ -1,9 +1,11 @@
+/* eslint-disable no-return-assign */
 /*
  *  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
  */
 
 import React from 'react';
 import { observer } from 'mobx-react';
+import { DragDropContext } from 'react-beautiful-dnd';
 import { Table, Spin } from 'antd';
 import { PreviewTableStore } from './tableStore';
 import TableHeaderCell from './tableHeaderCell';
@@ -25,22 +27,33 @@ export interface PreviewTableProps {
 class PreviewTable extends React.Component<PreviewTableProps> {
 	// Maps to store key -> arr index for quick lookup
 	// table: Table<any> | undefined;
+	isMac: boolean;
 	constructor(props: PreviewTableProps) {
 		super(props);
 		this.props.store.init(this.props.taskId);
+		this.isMac = this.props.store.isMac();
 	}
 
 	componentDidMount() {
-		if (!this.props.store.tableRef.current) {
-			return;
-		}
-		this.props.store.didMountTable();
-		document.addEventListener('click', (e) => {
-			if (this.props.store._editMore) {
-				this.props.store.onHideColunmMenu();
+		document.addEventListener('click', (e: any) => {
+			if (this.props.store._feildMenuIsOpened) {
+				const p = e.target.parentNode.className;
+				// 阻止冒泡失败，先用这个方法做一下判断
+				if (p && p.indexOf('iconClickMenu') < 0) {
+					this.props.store.onHideColunmMenu();
+				}
 			}
-			this.props.store._editMore = true;
 		});
+
+		const tableScoll = document.querySelector(`.div-previewTable${this.props.taskId} .ant-table-body`);
+		if (tableScoll) {
+			tableScoll.addEventListener('scroll', () => {
+				if (this.props.store._feildMenuIsOpened) {
+					this.props.store.onHideColunmMenu();
+				}
+			});
+			this.props.store.tableScoll = tableScoll;
+		}
 	}
 
 	components = {
@@ -70,6 +83,20 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		return className;
 	};
 
+	/**
+	 * 拖拽结束
+	 */
+	handlerDragEnd = (result: any) => {
+		console.log(`>>>`, result);
+	};
+
+	/**
+	 * 拖拽更新
+	 */
+	handlerDragUpdate = (initial: any) => {
+		console.log(`>>>`, initial);
+	};
+
 	render() {
 		const { loading, dataSource, columns, selectdRowIndex, selectdColIndexUId } = this.props.store;
 		this.props.store._colTotalWidth = 0;
@@ -90,6 +117,7 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 						className={`${
 							ind > 0 && ind === selectdRowIndex && col.uid === selectdColIndexUId ? 'selected-cell' : ''
 						}`}
+						title={text}
 					>
 						<span>{text}</span>
 					</div>
@@ -115,21 +143,23 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 		}
 
 		return (
-			<div className="div-previewTable">
-				<Table
-					size="small"
-					className={`div-previewTable${this.props.taskId} ${
-						dataSource.length === 1 ? 'div-previewTable-nodata' : ''
-					}`}
-					ref={(ref) => (this.props.store.tableRef = ref)}
-					pagination={false}
-					scroll={{ x: 'max-content', y: 'max-content' }}
-					bordered={true}
-					columns={newColumns}
-					dataSource={dataSource}
-					components={this.components}
-					rowClassName={this.getRowClassName}
-				/>
+			<div className={`div-previewTable ${this.isMac ? 'div-inmac' : ''}`}>
+				<DragDropContext onDragEnd={this.handlerDragEnd} onDragUpdate={this.handlerDragUpdate}>
+					<Table
+						size="small"
+						className={`div-previewTable${this.props.taskId} ${
+							dataSource.length === 1 ? 'div-previewTable-nodata' : ''
+						}`}
+						ref={(ref) => (this.props.store.tableRef = ref)}
+						pagination={false}
+						scroll={{ x: 'max-content', y: 'max-content' }}
+						bordered={true}
+						columns={newColumns}
+						dataSource={dataSource}
+						components={this.components}
+						rowClassName={this.getRowClassName}
+					/>
+				</DragDropContext>
 				<Spin
 					ref={(ref) => (this.props.store.spinRef = ref)}
 					spinning={loading}
