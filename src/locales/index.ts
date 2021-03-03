@@ -28,6 +28,7 @@ export const lang = {
 		Cut: '剪切'
 	},
 	CustomTask: {
+		ChangeFieldOrderHori: '移动可修改顺序',
 		EditFieldName: '修改',
 		MoreFieldOperations: '更多'
 	}

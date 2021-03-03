@@ -52,7 +52,7 @@
 }
 
 .div-previewTable .ant-table-thead tr th {
-	padding: 1px 8px !important;
+	padding: 1px 4px !important;
 	border-top: 2px solid transparent;
 	transition: none !important;
 }
@@ -80,8 +80,8 @@
 	display: inline-block;
 	position: absolute;
 	width: calc(100% - 20px);
-	left: 18px;
-	top: 6px;
+	left: 10px;
+	top: 5px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -110,12 +110,14 @@
 	display: none;
 	cursor: pointer;
 }
-.div-previewTable .react-resizable-th .th-action-drag {
-	/* width: 10px; */
-}
+
 .div-previewTable .react-resizable-th .action-drag-icon {
 	display: none;
 	cursor: pointer;
+}
+
+.div-previewTable .react-resizable-th .action-drag-icon i {
+	margin: 5px 0 0 -5px !important;
 }
 
 .div-previewTable .react-resizable-th:hover span.resizable-th-action {

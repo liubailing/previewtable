@@ -142,9 +142,6 @@ class PreviewTable extends React.Component<PreviewTableProps> {
 					dataSource={dataSource}
 					components={this.components}
 					rowClassName={this.getRowClassName}
-					onHeaderRow={(column: any) => ({
-						store: this.props.store
-					})}
 				/>
 				<Spin
 					ref={(ref) => (this.props.store.spinRef = ref)}

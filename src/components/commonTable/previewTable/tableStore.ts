@@ -62,6 +62,8 @@ export class PreviewTableStore {
 	_colMinWidth = 100;
 	/** 缓存宽度 */
 	_mapWidth = new Map<string, number>().set('index', this._indexWidth);
+	/** 正在被拖动的地段 */
+	_dragingUid = '';
 
 	/** 默认第一列 */
 	readonly _columnIndex: Column[] = [
@@ -140,12 +142,12 @@ export class PreviewTableStore {
 	 * @param callbackHander
 	 */
 	@action
-	onUpdateColunmName(belongTo: string, uid: string, newName: string, callbackHander: boolean = false) {
+	onUpdateColunmName(uid: string, newName: string, callbackHander: boolean = false) {
 		this.columns.forEach((column) => {
 			if (column.uid === uid) {
 				column.title = newName;
 				if (callbackHander) {
-					this.previewTableHander.handlerRename(belongTo, uid, newName);
+					this.previewTableHander.handlerRename(uid, newName);
 				}
 			}
 		});
@@ -284,6 +286,14 @@ export class PreviewTableStore {
 		res = this.onAddColumn(column);
 		return res;
 	}
+
+	/**
+	 * 设置拖动值
+	 * @param uid
+	 */
+	setDragFromUid = (uid: string) => {
+		this._dragingUid = uid;
+	};
 
 	/**
 	 * 滚动到某列

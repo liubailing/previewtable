@@ -5,7 +5,7 @@ export interface IPreviewTableHander {
 	 * @param index
 	 * @param newName
 	 */
-	handlerRename: (belongTo: string | undefined, uid: string, newName: string) => void;
+	handlerRename: (uid: string, newName: string) => void;
 	/**
 	 * 删除列
 	 * @param index
@@ -41,4 +41,10 @@ export interface IPreviewTableHander {
 	 * @param rowIndex
 	 */
 	handlerGetColumnMenu: (uid: string, show?: boolean) => any;
+
+	/**
+	 * 拖拽成功
+	 * @param rowIndex
+	 */
+	handlerDragDrop: (fromUid: string, toUid: string) => void;
 }

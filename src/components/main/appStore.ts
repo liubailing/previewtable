@@ -30,7 +30,7 @@ export class AppStore implements IPreviewTableHander {
 	 * @param newName
 	 */
 	handlerRename(uid: string | undefined, newName: string): void {
-		this.previewTableStore.onUpdateColunmName('', uid || '', newName);
+		this.previewTableStore.onUpdateColunmName(uid || '', newName);
 		this.log(`>>>>>>>> handlerRename, ${uid},${newName}`);
 	}
 
@@ -77,6 +77,25 @@ export class AppStore implements IPreviewTableHander {
 
 	handlerGetColumnMenu(uid: string, show_menu?: boolean): void {}
 
+	/**
+	 * 拖拽成功
+	 * @param rowIndex
+	 */
+	handlerDragDrop(fromUid: string, toUid: string): void {
+		this.log(`>>>>>>>> handlerDragEnd,${fromUid},${toUid}`);
+
+		if (fromUid !== toUid) {
+			const fromIndex = this.columns.findIndex((x) => x.uid === fromUid);
+			const toIndex = this.columns.findIndex((x) => x.uid === toUid);
+			let temp = this.columns[fromIndex];
+			this.columns[fromIndex] = this.columns[toIndex];
+			this.columns[toIndex] = temp;
+		}
+		// debugger;
+		this.previewTableStore.onInit();
+		// this.previewTableStore.onSetTableHeight(100);
+		this.previewTableStore.onAddColumn(this.columns);
+	}
 	/********** 回调函数 bend **********/
 
 	tempActionData: any = null;
@@ -216,7 +235,7 @@ export class AppStore implements IPreviewTableHander {
 				this.previewTableStore.onAddColumn(this.columns2);
 				break;
 			case 'update_colunmName':
-				this.previewTableStore.onUpdateColunmName('', 'sss1', '新的名字');
+				this.previewTableStore.onUpdateColunmName('sss1', '新的名字');
 				break;
 			case 'set_update_colunmName':
 				this.previewTableStore.onSetUpdateColunmName('sss1', '正在修改', true);
